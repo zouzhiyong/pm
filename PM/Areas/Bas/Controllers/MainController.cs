@@ -83,6 +83,8 @@ namespace PM.Areas.Bas.Controllers
                             max(c.logintimeApp) as noLoginAppDay,
                             datediff(day,max(c.logintimeWeb),GETDATE()) as noLoginWebDayNums,
 							datediff(day,max(c.logintimeApp),GETDATE()) as noLoginAppDayNums,
+                            datediff(day,max(f.RecTimestamp),GETDATE()) as noInputFyDayNums,
+                            datediff(day,max(g.VisitDate),GETDATE()) as noBfDayNums,
                             d.userCount,
                             isnull(e.vehCount,0) as vehCount,
                             d.xsdbCount,
@@ -93,13 +95,13 @@ namespace PM.Areas.Bas.Controllers
                             d.sjCount,
                             d.qtCount                            
                             from 
-							(select t1.*,t3.AreaName+'/'+t2.AreaName as AreaName from Bas_WS t1
+							(select t1.WSID,t1.WSName,t1.WSType,t1.IsValid,t3.AreaName+'/'+t2.AreaName as AreaName from Bas_WS t1
 							left join Bas_Area t2
 							on t1.AreaCode=t2.AreaCode
 							left join Bas_Area t3
 							on t2.ParentCode=t3.AreaCode
 							) a
-                            left join sys_user b
+                            left join (select WSID,UserID from sys_user) b
                             on b.WSID=a.WSID
                             left join 
                             (
@@ -127,6 +129,10 @@ namespace PM.Areas.Bas.Controllers
 							on a.wsid=d.wsid
                             left join (select WSID,count(VehID) as vehCount from Bas_Vehicle where isnull(IsValid,1)=1 and isnull(GpsID,'')<>'' group by WSID) e
 							on a.WSID=e.WSID
+                            left join (select WSID,max(RecTimestamp) as RecTimestamp from view_TMS_Car_Cost group by WSID) f
+                            on a.WSID=f.WSID
+                            left join (select WSID,max(VisitDate) as VisitDate from SFA_Visit group by WSID) g
+                            on a.WSID=g.WSID
                             where a.WSType=1 and isnull(a.IsValid,1)=1 
                             {0}
                             group by a.AreaName,a.WSID,a.WSName,e.vehCount,d.userCount,d.xsdbCount,d.xszgCount,d.xsjlCount,d.xszjCount,d.cxywyCount,d.sjCount,d.qtCount
@@ -134,25 +140,36 @@ namespace PM.Areas.Bas.Controllers
 
             string str = String.Format(strSql.ToString(), whereStr.ToString());
 
-            var stuLis = stuContext.Database.SqlQuery<useinfo>(str).ToList();
-            var totalWsCount = stuLis.Count<useinfo>();
-            var totalUserCount = stuLis.Sum<useinfo>(t => t.userCount);
-            var totalVehCount = stuLis.Sum<useinfo>(t => t.vehCount);
-            //List<useinfo> newInfo = new List<useinfo>();
+            var userLis = stuContext.Database.SqlQuery<useInfo>(str).ToList();
+            var totalWsCount = userLis.Count<useInfo>();
+            var totalUserCount = userLis.Sum<useInfo>(t => t.userCount);
+            var totalVehCount = userLis.Sum<useInfo>(t => t.vehCount);
 
-            //DateTime newDate = DateTime.Now;
-            //foreach (var item in stuLis)
-            //{
-            //    TimeSpan noLoginWebDayTs = newDate - Convert.ToDateTime(item.noLoginWebDay == null ? Convert.ToDateTime("1900-01-01") : item.noLoginWebDay);
-            //    TimeSpan noLoginAppDayTs = newDate - Convert.ToDateTime(item.noLoginAppDay == null ? Convert.ToDateTime("1900-01-01") : item.noLoginAppDay);
-            //    item.noLoginWebDayNums = noLoginWebDayTs.Days;
-            //    item.noLoginAppDayNums = noLoginAppDayTs.Days;
-            //    item.noLoginWebDayStr = item.noLoginWebDayNums.ToString("yyyy-MM-dd HH:mm");
-            //    item.noLoginAppDayStr = item.noLoginAppDayNums.ToString("yyyy-MM-dd HH:mm");
-            //    newInfo.Add(item);
-            //}
+            strSql.Clear();
+            strSql.Append(@"select c.ApplicationType,count(distinct a.UserID) as moduleCount
+                            from sys_User a
+                            left join Sys_user_role b
+                            on a.UserID=b.UserID
+                            inner join (
+                            select r1.RoleID,r1.ModuleID,r3.ApplicationType from Sys_RoleRight r1
+                            inner join Sys_Role r2
+                            on r1.RoleID=r2.RoleID
+                            inner join (select ModuleID,ApplicationType,ModuleName from Sys_Module) r3
+                            on r1.ModuleID=r3.ModuleID
+                            where isnull(r2.IsValid,1)=1 and (len(r1.ModuleID)=2 or left(r1.ModuleID,2)='53')and r3.ApplicationType is not null and r3.ApplicationType<>'9' and r3.ApplicationType<>'0'
+                            ) c
+                            on c.RoleID=a.RoleID
+                            inner join (select WSID,WSName,WSType,IsValid from Bas_WS) d
+                            on a.WSID=d.WSID
+                            where d.WSType=1 and isnull(d.IsValid,1)=1 
+                            {0}
+                            group by c.ApplicationType order by moduleCount desc");
+            str = String.Format(strSql.ToString(), whereStr.ToString());
 
-            return Json(new { rows=stuLis, totalWsCount= totalWsCount, totalUserCount = totalUserCount , totalVehCount = totalVehCount });
+            var moduleLis = stuContext.Database.SqlQuery<moduleInfo>(str).ToList();
+            
+
+            return Json(new { rows= userLis, totalWsCount= totalWsCount, totalUserCount = totalUserCount , totalVehCount = totalVehCount, moduleLis= moduleLis });
         }
 
         /// <summary>
@@ -217,7 +234,7 @@ namespace PM.Areas.Bas.Controllers
         public JsonResult FindUseInfo()
         {
             StuInfoDBContext stuContext = new StuInfoDBContext();
-            List<useinfo> stuLis = stuContext.Database.SqlQuery<useinfo>("SELECT * FROM Bas_WS").ToList();
+            List<useInfo> stuLis = stuContext.Database.SqlQuery<useInfo>("SELECT * FROM Bas_WS").ToList();
 
             return Json(stuLis);
 

@@ -9,108 +9,64 @@
 <script type="text/javascript" src="~/Scripts/bootstrap-datepicker.min.js"></script>
 <script type="text/javascript" src="~/Scripts/locales/bootstrap-datepicker.zh-CN.min.js"></script>
 <style>
-    .form-group { margin-right: 10px; }
+    td, span, div { font-size: 12px; }
     .bootstrap-table .table { table-layout: fixed; }
     .fixed-table-container, .bootstrap-table .table { border-radius: 0; table-layout: fixed; }
         .bootstrap-table .table th { background-color: #0c125a; border-left: none; color: #fff; }
-    * { font-size: 12px; }
-    .bootstrap-table .table:not(.table-condensed), .bootstrap-table .table:not(.table-condensed) > tbody > tr > td, .bootstrap-table .table:not(.table-condensed) > tbody > tr > th, .bootstrap-table .table:not(.table-condensed) > tfoot > tr > td, .bootstrap-table .table:not(.table-condensed) > tfoot > tr > th, .bootstrap-table .table:not(.table-condensed) > thead > tr > td { padding: 5px; }
-    .bootstrap-table .table > thead > tr > th { vertical-align: middle; border-left: 1px solid #ddd; }
+        .bootstrap-table .table:not(.table-condensed), .bootstrap-table .table:not(.table-condensed) > tbody > tr > td, .bootstrap-table .table:not(.table-condensed) > tbody > tr > th, .bootstrap-table .table:not(.table-condensed) > tfoot > tr > td, .bootstrap-table .table:not(.table-condensed) > tfoot > tr > th, .bootstrap-table .table:not(.table-condensed) > thead > tr > td { padding: 5px; }
+        .bootstrap-table .table > thead > tr > th { vertical-align: middle; border-left: 1px solid #ddd; }
     td { text-overflow: ellipsis; white-space: nowrap; overflow: hidden; }
     .fixed-table-container tbody td .th-inner, .fixed-table-container thead th .th-inner { padding: 8px; line-height: 16px; vertical-align: top; overflow: hidden; text-overflow: ellipsis; white-space: inherit; text-align: center; }
 </style>
 <div class="container-fluid">
-    <div class="row" style="border: 1px solid #d7d7d7;margin: 0 25px 10px 15px; padding: 10px 5px; box-shadow: 2px 2px 5px rgba(188, 188, 188, 0.349019607843137)">
+    <div class="row form-inline" style="margin: 10px;">
+        <div class="col-xs-2"><h4><i>经销商使用情况</i></h4></div>
+        <div class="col-xs-3">
+            <div class="form-group">
+                <span for="days">未登录天数:</span>
+                <div class="form-group">
+                    <span class="input-daterange input-group" style="width:100px;">
+                        <input type="text" class="input-sm form-control" id="days" />
+                        <span class="input-group-addon" style="font-size:12px;">天</span>
+                    </span>
+                </div>
+                <span style="color:#910606;">红色标注</span>
+                <button type="button" class="btn btn-primary btn-sm btn-search">查询</button>
+            </div>
+        </div>
+    </div>
+    <div class="row" style="border: 1px solid #d7d7d7; margin: 10px; padding: 5px; box-shadow: 2px 2px 5px rgba(188, 188, 188, 0.349019607843137)">
         <div class="col-xs-2">
-            <div style="height: 150px;text-align:center;">
-                <span id="totalWsNumberValue" style="font-size: 55px; color: #ffb11b; line-height: 145px;font-weight:bold;font-family:'Times New Roman'">0</span>
+            <div style="height: 180px;text-align:center;">
+                <span id="totalWsNumberValue" style="font-size: 55px; color: #ffb11b; line-height: 150px;font-weight:bold;font-family:'Times New Roman'">0</span>
                 <br />
                 <span id="totolWsNumberLabel" style="font-size: 12px;font-weight:bold; line-height: 30px;">总经销商数</span>
             </div>
         </div>
         <div class="col-xs-2">
-            <div style="height: 150px;text-align:center;">
-                <span id="totalUserNumberValue" style="font-size: 55px; color: #73BF00; line-height: 145px;font-weight:bold;font-family:'Times New Roman'">0</span>
+            <div style="height: 180px;text-align:center;">
+                <span id="totalUserNumberValue" style="font-size: 55px; color: #73BF00; line-height: 150px;font-weight:bold;font-family:'Times New Roman'">0</span>
                 <br />
-                <span id="totalUserNumberLabel" style="font-size: 12px;font-weight:bold; line-height: 30px;">总用户数【含车辆】</span>
+                <span id="totalUserNumberLabel" style="font-size: 12px;font-weight:bold; line-height: 30px;">总用户数</span>
             </div>
         </div>
-        @*<div class="col-xs-2">
-                <div id="totalWsNumberTypeValue" style="height: 170px;"></div>
+        <div class="col-xs-2">
+            <div style="height: 180px;text-align:center;">
+                <span id="totalVehNumberValue" style="font-size: 55px; color: #c009ca; line-height: 150px;font-weight:bold;font-family:'Times New Roman'">0</span>
+                <br />
+                <span id="totalVehNumberLabel" style="font-size: 12px;font-weight:bold; line-height: 30px;">总车辆数</span>
             </div>
-            <div class="col-xs-2">
-                <div id="totalWsNumberModelValue" style="height: 170px;"></div>
-            </div>*@
-        <div class="col-xs-4">
-            <div id="totalUserNumberTypeValue" style="height: 170px;"></div>
         </div>
-        <div class="col-xs-4">
-            <div id="totalUserNumberModelValue" style="height: 170px;"></div>
+        <div class="col-xs-6">
+            <div id="moduleUserCount" style="height: 150px; padding: 10px 0px 10px 0px"></div>
+            <div style="font-size: 12px;font-weight:bold; line-height: 30px;text-align:center;">各模块使用用户数 【由于一个用户可能对应多个模块，用户数之和可能大于总用户数】</div>
         </div>
     </div>
-    <div class="row" style="margin: 0 10px 10px 0;">
-        <div class="col-xs-12">
-            <div class="form-inline">
-                <div class="form-group">
-                    <h4>经销商使用情况：</h4>
-                </div>
-                <div class="form-group">
-                    <label for="days">未登录天数:</label>
-                    <div class="form-group">
-                        <span class="input-daterange input-group" style="width:100px;">
-                            <input type="text" class="input-sm form-control" id="days" />
-                            <span class="input-group-addon" style="font-size:12px;">天</span>
-                        </span>
-                    </div>
-                    <label style="color:#910606;">红色标注</label>
-                </div>
-                @*<div class="form-group">
-                        <label for="begindate">日期:</label>
-                        <div class="form-group">
-                            <span class="input-daterange input-group date-picker" style="width:230px;">
-                                <input type="text" class="input-sm form-control" id="begindate" />
-                                <span class="input-group-addon" style="font-size:12px;">至</span>
-                                <input type="text" class="input-sm form-control" id="enddate" />
-                            </span>
-                        </div>
-                    </div>
-                    @*<div class="form-group">
-                        <label for="begindate">日期:</label>
-                        <div class="form-group">
-                            <span class="input-daterange input-group date-picker" style="width:230px;">
-                                <input type="text" class="input-sm form-control" id="begindate" />
-                                <span class="input-group-addon" style="font-size:12px;">至</span>
-                                <input type="text" class="input-sm form-control" id="enddate" />
-                            </span>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="modelType">模块:</label>
-                        <select id="modelType" name="modelType" class="form-control" style="width:80px;">
-                            <option value="0">全部</option>
-                            <option value="1">ESS</option>
-                            <option value="2">DMS</option>
-                            <option value="3">FIN</option>
-                            <option value="4">ELMS</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="projectType">类型:</label>
-                        <select id="projectType" name="projectType" class="form-control" style="width:100px;">
-                            <option value="0">全部</option>
-                            <option value="1">WPP</option>
-                            <option value="2">二批</option>
-                            <option value="3">自费</option>
-                        </select>
-                    </div>*@
 
-                <button type="button" class="btn btn-primary btn-sm btn-search">查询</button>
-            </div>
-        </div>
-        <div class="col-xs-12">
-            <table class="table table-striped" id="table"></table>
-        </div>
+    <div class="row" style="margin: 10px;">
+        <table class="table table-striped" id="table"></table>
     </div>
+
 </div>
 
 
@@ -225,10 +181,10 @@
                         title: '<i class="fa fa-television fa-lg"></i><br>未登录',
                         align: 'right',
                         cellStyle: function (value, row, field) {
-                            if (row.noLoginWebDay == null) {
+                            if (value == null) {
                                 return { css: { "background-color": "#9b9898" } };
                             } else {
-                                if (Number(row.noLoginWebDayNums) > Number($("#days").val())) {
+                                if (Number(value) > Number($("#days").val())) {
                                     return { css: { "background-color": "#910606", "color": "#fff" } };
                                 }
                             }
@@ -241,10 +197,10 @@
                         title: '<i class="fa fa-tablet fa-lg"></i><br>未登录',
                         align: 'right',
                         cellStyle: function (value, row, field) {
-                            if (row.noLoginAppDay == null) {
+                            if (value == null) {
                                 return { css: { "background-color": "#9b9898" } };
                             } else {
-                                if (Number(row.noLoginAppDayNums) > Number($("#days").val())) {
+                                if (Number(value) > Number($("#days").val())) {
                                     return { css: { "background-color": "#910606", "color": "#fff" } };
                                 }
                             }
@@ -255,10 +211,32 @@
                         field: 'noInputFyDayNums',
                         title: '<i class="fa fa fa-edit fa-lg"></i><br>未录费用',
                         align: 'right',
+                        cellStyle: function (value, row, field) {
+                            if (value == null) {
+                                return { css: { "background-color": "#9b9898" } };
+                            } else {
+                                if (Number(value) > Number($("#days").val())) {
+                                    return { css: { "background-color": "#910606", "color": "#fff" } };
+                                }
+                            }
+
+                            return "";
+                        }
                     }, {
                         field: 'noBfDayNums',
                         title: '<i class="fa fa-user-times fa-lg"></i><br>未拜访',
                         align: 'right',
+                        cellStyle: function (value, row, field) {
+                            if (value == null) {
+                                return { css: { "background-color": "#9b9898" } };
+                            } else {
+                                if (Number(value) > Number($("#days").val())) {
+                                    return { css: { "background-color": "#910606", "color": "#fff" } };
+                                }
+                            }
+
+                            return "";
+                        }
                     }, {
                         field: 'xsdbCount',
                         title: '销售代表',
@@ -357,27 +335,6 @@
         var myChartFun = null;
 
         $this.init = function () {
-            $.ajax({
-                type: 'POST',
-                async: false,
-                url: 'UpdateSvn?fileName=优加实施售后文档.xlsx&user=zouzhiyong&pwd=zouzhiyong&type=online',
-                beforeSend: function (XMLHttpRequest) {
-                    $(".loading-icon").show();
-                    $(".body-content").hide();
-                },
-                success: function (result) {
-                    $(".loading-icon").hide();
-                    $(".body-content").show();
-                },
-                complete: function (XMLHttpRequest, textStatus) {
-                    $(".loading-icon").hide();
-                    $(".body-content").show();
-                },
-                error: function (error) {
-
-                }
-            });
-
             GetDateStr = function (AddDayCount) {
                 var dd = new Date();
                 dd.setDate(dd.getDate() + AddDayCount);//获取AddDayCount天后的日期
@@ -393,82 +350,109 @@
                 $this.TableDataInit();
             })
 
-            //饼图
+            //柱状
             myChartFun = function (myChartArr) {
-                var myChart = myChartArr[0];// echarts.init(document.getElementById(myArray[0]));
-                var itemStyle = {
-                    normal: {
-                        borderWidth: 1.5,
-                        borderColor: '#ffffff'
-                    },
-                    emphasis: {
-                        shadowBlur: 10,
-                        shadowOffsetX: 0,
-                        shadowColor: 'rgba(0, 0, 0, 0.5)'
-                    }
-                };
-
-                var data = [];
-
-                myChartArr[2].map(function (item, index) {
-                    var obj = {
-                        value: myChartArr[4][index],
-                        name: myChartArr[2][index] + "【" + myChartArr[4][index] + "】",
-                        itemStyle: {
-                            normal: { color: myChartArr[3][index] }
-                        }
-                    }
-                    data.push(obj);
-                })
+                var myChart = myChartArr[0];
+                var title = myChartArr[1];
+                var dataLabel = myChartArr[2];
+                var dataArr = myChartArr[3];
 
                 option = {
                     title: {
-                        text: myChartArr[1],
-                        x: 'center',
-                        y: 'bottom',
+                        text: "",
                         textStyle: {
-                            fontSize: '15',
+                            fontSize: '12',
                             fontWeight: 'bold'
                         }
                     },
                     tooltip: {
-                        trigger: 'item',
-                        formatter: function (v) {
-                            return v.seriesName + "<br/>" + v.name + ":" + v.value + " (" + parseInt(v.percent) + ")%"
-                        },
-                        textStyle: {
-                            fontSize: '12'
+                        trigger: 'axis',
+                        axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                            type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
                         }
                     },
+                    legend: {
+                        //data: dataLabel,
+                        x: 'center',
+                        y: 'bottom',
+                    },
+                    grid: {
+                        top: '15%',
+                        left: '5%',
+                        right: '5%',
+                        bottom: '0%',
+                        containLabel: true
+                    },
+                    xAxis:
+                        {
+                            type: 'category',
+                            data: dataLabel,
+                            boundaryGap: true,
+                            axisLabel: {
+                                interval: 0,
+                                //rotate: 45//倾斜度 -90 至 90 默认为0
+                            },
+                            splitLine: {//终于找到了，背景图的内置表格中“边框”的颜色线条  这个是x跟y轴轴的线
+                                show: true,
+                                lineStyle: {
+                                    width: 0.5,
+                                    color: "#e4e4e4",
+                                    type: "solid"
+                                }
+                            },
+                            axisLine: {
+                                show: false,
+                                lineStyle: {
+                                    width: 0.5,
+                                    color: "#000000",
+                                    type: "solid"
+                                }
+                            }
+                        },
+                    yAxis:
+                        {
+                            type: 'value',
+                            splitLine: {//终于找到了，背景图的内置表格中“边框”的颜色线条  这个是x跟y轴轴的线
+                                show: true,
+                                lineStyle: {
+                                    width: 0.5,
+                                    color: "#e4e4e4",
+                                    type: "solid"
+                                }
+                            },
+                            axisLine: {
+                                show: false,
+                                lineStyle: {
+                                    width:0.5,
+                                    color: "#000000",
+                                    type: "solid"
+                                }
+                            },
+                            axisLabel: {
+                                textStyle: {
+                                    color: '#999'
+                                }
+                            }
+
+                        },
                     series: [
                         {
-                            name: myChartArr[1],
-                            type: 'pie',
-                            radius: ['30%', '60%'],
-                            center: ['50%', '40%'],
-                            avoidLabelOverlap: true,
-                            labelLine: {
-                                length: 8,
-                                length2: 5,
-                            },
+                            type: 'bar',
+                            data: dataArr,
                             label: {
                                 normal: {
                                     show: true,
-                                    fontSize: '12',
-                                    fontWeight: 'normal',
-                                    //position: 'inside'
-                                },
-
-                                emphasis: {
-                                    show: true,
-                                    textStyle: {
-                                        fontSize: '12',
-                                        fontWeight: 'bold'
-                                    }
+                                    position: 'top'
                                 }
                             },
-                            data: data,
-                            itemStyle: itemStyle
+                            itemStyle: {
+                                normal: {
+                                    color: "#00b050",//类别颜色
+                                    borderColor: "#FFFFFF",
+                                    borderWidth: 0
+                                }
+                            },
+
                         }
                     ]
                 };
@@ -480,83 +464,101 @@
             }
         }
 
-        $this.getDesbord = function () {
-            //获取值
-            $.ajax({
-                type: 'POST',
-                url: 'FindHelpList?fileName=优加实施售后文档.xlsx&sheetName=汇总&headerRowIndex=0',
-                beforeSend: function (XMLHttpRequest) {
-                    $(".loading-icon").show();
-                },
-                success: function (data) {
-                    var result = data[0];
+        //$this.getDesbord = function () {
+        //    //获取值
+        //    $.ajax({
+        //        type: 'POST',
+        //        url: 'FindHelpList?fileName=优加实施售后文档.xlsx&sheetName=汇总&headerRowIndex=0',
+        //        beforeSend: function (XMLHttpRequest) {
+        //            $(".loading-icon").show();
+        //        },
+        //        success: function (data) {
+        //            var result = data[0];
 
-                    totalValue.totalWSNumber = result.total_ws;//经销商总数
-                    totalValue.totalUSERNumber = result.total_user_number;//用户总数
-                    totalValue.numberEss = result.user_number_ess;//ESS用户数
-                    totalValue.numberElms = result.user_number_elms;//ELMS用户数
-                    totalValue.numberDms = result.user_number_dms;//DMS用户数
-                    totalValue.numberFin = result.user_number_fin;//FIN用户数
-                    totalValue.numberWpp = result.user_number_wpp;//WPP用户数
-                    totalValue.numberCust = result.user_number_cust;//自费用户数
-                    totalValue.numberTwo = result.user_number_two;//二批商用户数
-
-                    //赋值
-                    $("#totalWsNumberValue").html(totalValue.totalWSNumber);
-                    $("#totalUserNumberValue").html(totalValue.totalUSERNumber);
+        //            totalValue.totalWSNumber = result.total_ws;//经销商总数
+        //            totalValue.totalUSERNumber = result.total_user_number;//用户总数
+        //            totalValue.numberEss = result.user_number_ess;//ESS用户数
+        //            totalValue.numberElms = result.user_number_elms;//ELMS用户数
+        //            totalValue.numberDms = result.user_number_dms;//DMS用户数
+        //            totalValue.numberFin = result.user_number_fin;//FIN用户数
+        //            totalValue.numberWpp = result.user_number_wpp;//WPP用户数
+        //            totalValue.numberCust = result.user_number_cust;//自费用户数
+        //            totalValue.numberTwo = result.user_number_two;//二批商用户数
 
 
 
-                    var totalUserNumberTypeValue = document.getElementById("totalUserNumberTypeValue");
-                    var totalUserNumberModelValue = document.getElementById("totalUserNumberModelValue");
 
 
-                    //$("#totalUserNumberTypeValue").width($("#totalUserNumberTypeValue").height()*2);
-                    //$("#totalUserNumberModelValue").width($("#totalUserNumberModelValue").height()*2);
-
-                    var myChart1 = echarts.init(totalUserNumberTypeValue, null, { renderer: 'svg' });
-                    var totalUserNumberTypeValueArr = new Array(myChart1, "用户数【分项目】", ["WPP", "自费", "二批"], ["#73BF00", "#cc3fc8", "#538BFA"], [totalValue.numberWpp, totalValue.numberCust, totalValue.numberTwo]);
-                    myChartFun(totalUserNumberTypeValueArr);
+        //            var totalUserNumberTypeValue = document.getElementById("totalUserNumberTypeValue");
+        //            var totalUserNumberModelValue = document.getElementById("totalUserNumberModelValue");
 
 
-                    var myChart2 = echarts.init(totalUserNumberModelValue, null, { renderer: 'svg' });
-                    var totalUserNumberModelValueArr = new Array(myChart2, "用户数【分模块】", ["DMS", "ESS", "ELMS", "财务"], ["#73BF00", "#cc3fc8", "#538BFA", "#fac753"], [totalValue.numberDms, totalValue.numberEss, totalValue.numberElms, totalValue.numberFin]);
-                    myChartFun(totalUserNumberModelValueArr);
+        //            //$("#totalUserNumberTypeValue").width($("#totalUserNumberTypeValue").height()*2);
+        //            //$("#totalUserNumberModelValue").width($("#totalUserNumberModelValue").height()*2);
+
+        //            var myChart1 = echarts.init(totalUserNumberTypeValue, null, { renderer: 'svg' });
+        //            var totalUserNumberTypeValueArr = new Array(myChart1, "用户数【分项目】", ["WPP", "自费", "二批"], ["#73BF00", "#cc3fc8", "#538BFA"], [totalValue.numberWpp, totalValue.numberCust, totalValue.numberTwo]);
+        //            myChartFun(totalUserNumberTypeValueArr);
 
 
-                    $(".loading-icon").hide();
-                },
-                complete: function (XMLHttpRequest, textStatus) {
-                    $(".loading-icon").hide();
-                },
-                error: function (error) {
-                    //alert(error.responseText);
-                }
-            });
+        //            var myChart2 = echarts.init(totalUserNumberModelValue, null, { renderer: 'svg' });
+        //            var totalUserNumberModelValueArr = new Array(myChart2, "用户数【分模块】", ["DMS", "ESS", "ELMS", "财务"], ["#73BF00", "#cc3fc8", "#538BFA", "#fac753"], [totalValue.numberDms, totalValue.numberEss, totalValue.numberElms, totalValue.numberFin]);
+        //            myChartFun(totalUserNumberModelValueArr);
 
-        }
+
+        //            $(".loading-icon").hide();
+        //        },
+        //        complete: function (XMLHttpRequest, textStatus) {
+        //            $(".loading-icon").hide();
+        //        },
+        //        error: function (error) {
+        //            //alert(error.responseText);
+        //        }
+        //    });
+
+        //}
 
         //获取值
         $this.TableDataInit = function () {
             $.ajax({
                 type: 'POST',
                 url: 'FindSqlList',
-                async:false,
-                data: { where: "1000225,1000142,1000147,1000247,1000175,1000220,1000216" },
+
+                data: { where: "1000095,1000225,1000142,1000147,1000247,1000175,1000220,1000216" },
                 beforeSend: function (XMLHttpRequest) {
                     $(".loading-icon").show();
                 },
                 success: function (result) {
+                    var dataLabel = [];
+                    var dataArr = [];
+                    result.moduleLis.map(function (item) {
+                        dataLabel.push(item.ApplicationTypeName);
+                        dataArr.push(item.moduleCount);
+                    })
+
+                    var moduleUserCount = document.getElementById("moduleUserCount");
+                    var myChart1 = echarts.init(moduleUserCount, null);
+                    var myChartArr = new Array(myChart1, "各模块对应用户数", dataLabel, dataArr);
+                    myChartFun(myChartArr);
+
+
                     data = [];
                     totalCount.totalWsCount = result.totalWsCount;
                     totalCount.totalUserCount = result.totalUserCount;
                     totalCount.totalVehCount = result.totalVehCount;
 
+                    //赋值
+                    $("#totalWsNumberValue").html(totalCount.totalWsCount);
+                    $("#totalUserNumberValue").html(totalCount.totalUserCount);
+                    $("#totalVehNumberValue").html(totalCount.totalVehCount);
+
                     result.rows.map(function (item, index) {
                         var obj = {};
                         item.id = index + 1;
-                        item.noLoginWebDayNums = item.noLoginWebDay == null ? "-" : item.noLoginWebDayNums;
-                        item.noLoginAppDayNums = item.noLoginAppDay == null ? "-" : item.noLoginAppDayNums;
+                        item.noLoginWebDayNums = item.noLoginWebDayNums == null ? "-" : item.noLoginWebDayNums;
+                        item.noLoginAppDayNums = item.noLoginAppDayNums == null ? "-" : item.noLoginAppDayNums;
+                        item.noInputFyDayNums = item.noInputFyDayNums == null ? "-" : item.noInputFyDayNums;
+                        item.noBfDayNums = item.noBfDayNums == null ? "-" : item.noBfDayNums;
 
                         data.push(item);
                     })
@@ -644,8 +646,15 @@
             $table = $('#table');
             $table.bootstrapTable({
                 data: data,
+                singleSelect: true,
                 height: $(window).height() - $table.offset().top - 15,
                 columns: columns,
+                onClickRow: function (row, $element) {
+                    if ($table.bootstrapTable('getOptions').singleSelect == true) {
+                        $('.success').removeClass('success');//去除之前选中的行的，选中样式
+                        $($element).addClass('success');//添加当前选中的 success样式用于区别
+                    }
+                },
             });
 
             $(window).resize(function () {
@@ -655,7 +664,7 @@
 
 
         $this.init();
-        $this.getDesbord();
+        //$this.getDesbord();
         $this.TableDataInit();
 
 
