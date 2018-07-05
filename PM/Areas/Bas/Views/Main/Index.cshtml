@@ -1,0 +1,666 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/Content/bootstrap-table.min.css" rel="stylesheet" />
+<link href="~/Content/bootstrap-datepicker3.css" rel="stylesheet" />
+<script type="text/javascript" src="~/Scripts/bootstrap-table.min.js"></script>
+<script type="text/javascript" src="~/Scripts/bootstrap-table-zh-CN.min.js"></script>
+<script type="text/javascript" src="~/Scripts/bootstrap-datepicker.min.js"></script>
+<script type="text/javascript" src="~/Scripts/locales/bootstrap-datepicker.zh-CN.min.js"></script>
+<style>
+    .form-group { margin-right: 10px; }
+    .bootstrap-table .table { table-layout: fixed; }
+    .fixed-table-container, .bootstrap-table .table { border-radius: 0; table-layout: fixed; }
+        .bootstrap-table .table th { background-color: #0c125a; border-left: none; color: #fff; }
+    * { font-size: 12px; }
+    .bootstrap-table .table:not(.table-condensed), .bootstrap-table .table:not(.table-condensed) > tbody > tr > td, .bootstrap-table .table:not(.table-condensed) > tbody > tr > th, .bootstrap-table .table:not(.table-condensed) > tfoot > tr > td, .bootstrap-table .table:not(.table-condensed) > tfoot > tr > th, .bootstrap-table .table:not(.table-condensed) > thead > tr > td { padding: 5px; }
+    .bootstrap-table .table > thead > tr > th { vertical-align: middle; border-left: 1px solid #ddd; }
+    td { text-overflow: ellipsis; white-space: nowrap; overflow: hidden; }
+    .fixed-table-container tbody td .th-inner, .fixed-table-container thead th .th-inner { padding: 8px; line-height: 16px; vertical-align: top; overflow: hidden; text-overflow: ellipsis; white-space: inherit; text-align: center; }
+</style>
+<div class="container-fluid">
+    <div class="row" style="border: 1px solid #d7d7d7;margin: 0 25px 10px 15px; padding: 10px 5px; box-shadow: 2px 2px 5px rgba(188, 188, 188, 0.349019607843137)">
+        <div class="col-xs-2">
+            <div style="height: 150px;text-align:center;">
+                <span id="totalWsNumberValue" style="font-size: 55px; color: #ffb11b; line-height: 145px;font-weight:bold;font-family:'Times New Roman'">0</span>
+                <br />
+                <span id="totolWsNumberLabel" style="font-size: 12px;font-weight:bold; line-height: 30px;">总经销商数</span>
+            </div>
+        </div>
+        <div class="col-xs-2">
+            <div style="height: 150px;text-align:center;">
+                <span id="totalUserNumberValue" style="font-size: 55px; color: #73BF00; line-height: 145px;font-weight:bold;font-family:'Times New Roman'">0</span>
+                <br />
+                <span id="totalUserNumberLabel" style="font-size: 12px;font-weight:bold; line-height: 30px;">总用户数【含车辆】</span>
+            </div>
+        </div>
+        @*<div class="col-xs-2">
+                <div id="totalWsNumberTypeValue" style="height: 170px;"></div>
+            </div>
+            <div class="col-xs-2">
+                <div id="totalWsNumberModelValue" style="height: 170px;"></div>
+            </div>*@
+        <div class="col-xs-4">
+            <div id="totalUserNumberTypeValue" style="height: 170px;"></div>
+        </div>
+        <div class="col-xs-4">
+            <div id="totalUserNumberModelValue" style="height: 170px;"></div>
+        </div>
+    </div>
+    <div class="row" style="margin: 0 10px 10px 0;">
+        <div class="col-xs-12">
+            <div class="form-inline">
+                <div class="form-group">
+                    <h4>经销商使用情况：</h4>
+                </div>
+                <div class="form-group">
+                    <label for="days">未登录天数:</label>
+                    <div class="form-group">
+                        <span class="input-daterange input-group" style="width:100px;">
+                            <input type="text" class="input-sm form-control" id="days" />
+                            <span class="input-group-addon" style="font-size:12px;">天</span>
+                        </span>
+                    </div>
+                    <label style="color:#910606;">红色标注</label>
+                </div>
+                @*<div class="form-group">
+                        <label for="begindate">日期:</label>
+                        <div class="form-group">
+                            <span class="input-daterange input-group date-picker" style="width:230px;">
+                                <input type="text" class="input-sm form-control" id="begindate" />
+                                <span class="input-group-addon" style="font-size:12px;">至</span>
+                                <input type="text" class="input-sm form-control" id="enddate" />
+                            </span>
+                        </div>
+                    </div>
+                    @*<div class="form-group">
+                        <label for="begindate">日期:</label>
+                        <div class="form-group">
+                            <span class="input-daterange input-group date-picker" style="width:230px;">
+                                <input type="text" class="input-sm form-control" id="begindate" />
+                                <span class="input-group-addon" style="font-size:12px;">至</span>
+                                <input type="text" class="input-sm form-control" id="enddate" />
+                            </span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="modelType">模块:</label>
+                        <select id="modelType" name="modelType" class="form-control" style="width:80px;">
+                            <option value="0">全部</option>
+                            <option value="1">ESS</option>
+                            <option value="2">DMS</option>
+                            <option value="3">FIN</option>
+                            <option value="4">ELMS</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="projectType">类型:</label>
+                        <select id="projectType" name="projectType" class="form-control" style="width:100px;">
+                            <option value="0">全部</option>
+                            <option value="1">WPP</option>
+                            <option value="2">二批</option>
+                            <option value="3">自费</option>
+                        </select>
+                    </div>*@
+
+                <button type="button" class="btn btn-primary btn-sm btn-search">查询</button>
+            </div>
+        </div>
+        <div class="col-xs-12">
+            <table class="table table-striped" id="table"></table>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(function () {
+        $this = this;
+        var GetDateStr = null;
+        var totalValue = {};
+        var data = [];
+        var $table = null;
+        var totalCount = {}
+        var columns = [
+                [{
+                    field: 'id',
+                    title: '序号',
+                    align: 'center',
+                    width: 50,
+                    colspan: 1,
+                    rowspan: 2,
+                    valign: "middle",
+                }, {
+                    field: 'AreaName',
+                    title: '城市',
+                    align: 'left',
+                    colspan: 1,
+                    rowspan: 2,
+                    width: 150,
+                    valign: "middle",
+                }, {
+                    field: 'WSName',
+                    title: '经销商名称',
+                    align: 'left',
+                    colspan: 1,
+                    rowspan: 2,
+                    width: 200,
+                    valign: "middle",
+                }, {
+                    field: 'onlineDate',
+                    title: '上线日期',
+                    colspan: 1,
+                    rowspan: 2,
+                    width: 90,
+                    valign: "middle",
+                    formatter: function (value, row, index) {
+                        if (value == null) {
+                            return "待上线";
+                        } else {
+                            return new Date(eval('new ' + value.substr(1, value.length - 2))).Format("yyyy-MM-dd");
+                        }
+                    },
+                    cellStyle: function (value, row, field) {
+                        if (value == null) {
+                            return { css: { "background-color": "#b3c0f1", "text-align": "center" } };
+                        } else {
+                            return { css: { "text-align": "right" } };
+                        }
+                    }
+                }, {
+                    field: 'userCount',
+                    title: '用户总数',
+                    halign: "center",
+                    align: 'right',
+                    valign: "middle",
+                    colspan: 1,
+                    rowspan: 2,
+                    width: 70,
+                    formatter: function (value, row, index) {
+                        if (value == 0) {
+                            return "-";
+                        } else {
+                            return value;
+                        }
+                    }
+                }, {
+                    field: 'vehCount',
+                    title: '车辆总数',
+                    align: 'right',
+                    colspan: 1,
+                    rowspan: 2,
+                    width: 70,
+                    valign: "middle",
+                    formatter: function (value, row, index) {
+                        if (value == 0) {
+                            return "-";
+                        } else {
+                            return value;
+                        }
+                    },
+                },
+                {
+                    field: 'nousedays',
+                    title: '最近连续天数',
+                    align: 'right',
+                    halign: "center",
+                    width: 280,
+                    colspan: 4,
+                    rowspan: 1,
+                },
+                {
+                    field: 'usenumbers',
+                    title: '各类型用户数',
+                    align: 'right',
+                    halign: "center",
+                    width: 320,
+                    colspan: 7,
+                    rowspan: 1,
+                }
+                ],
+                [
+                    {
+                        field: 'noLoginWebDayNums',
+                        title: '<i class="fa fa-television fa-lg"></i><br>未登录',
+                        align: 'right',
+                        cellStyle: function (value, row, field) {
+                            if (row.noLoginWebDay == null) {
+                                return { css: { "background-color": "#9b9898" } };
+                            } else {
+                                if (Number(row.noLoginWebDayNums) > Number($("#days").val())) {
+                                    return { css: { "background-color": "#910606", "color": "#fff" } };
+                                }
+                            }
+
+
+                            return "";
+                        }
+                    }, {
+                        field: 'noLoginAppDayNums',
+                        title: '<i class="fa fa-tablet fa-lg"></i><br>未登录',
+                        align: 'right',
+                        cellStyle: function (value, row, field) {
+                            if (row.noLoginAppDay == null) {
+                                return { css: { "background-color": "#9b9898" } };
+                            } else {
+                                if (Number(row.noLoginAppDayNums) > Number($("#days").val())) {
+                                    return { css: { "background-color": "#910606", "color": "#fff" } };
+                                }
+                            }
+
+                            return "";
+                        }
+                    }, {
+                        field: 'noInputFyDayNums',
+                        title: '<i class="fa fa fa-edit fa-lg"></i><br>未录费用',
+                        align: 'right',
+                    }, {
+                        field: 'noBfDayNums',
+                        title: '<i class="fa fa-user-times fa-lg"></i><br>未拜访',
+                        align: 'right',
+                    }, {
+                        field: 'xsdbCount',
+                        title: '销售代表',
+                        halign: "center",
+                        align: 'right',
+                        valign: "middle",
+                        formatter: function (value, row, index) {
+                            if (value == 0) {
+                                return "-";
+                            } else {
+                                return value;
+                            }
+                        },
+                    }, {
+                        field: 'xszgCount',
+                        title: '销售主管',
+                        halign: "center",
+                        align: 'right',
+                        valign: "middle",
+                        formatter: function (value, row, index) {
+                            if (value == 0) {
+                                return "-";
+                            } else {
+                                return value;
+                            }
+                        },
+                    }, {
+                        field: 'xsjlCount',
+                        title: '销售经理',
+                        halign: "center",
+                        align: 'right',
+                        valign: "middle",
+                        formatter: function (value, row, index) {
+                            if (value == 0) {
+                                return "-";
+                            } else {
+                                return value;
+                            }
+                        },
+                    }, {
+                        field: 'xszjCount',
+                        title: '销售总监',
+                        halign: "center",
+                        align: 'right',
+                        valign: "middle",
+                        formatter: function (value, row, index) {
+                            if (value == 0) {
+                                return "-";
+                            } else {
+                                return value;
+                            }
+                        },
+                    }, {
+                        field: 'cxywyCount',
+                        title: '车销业务员',
+                        halign: "center",
+                        align: 'right',
+                        valign: "middle",
+                        formatter: function (value, row, index) {
+                            if (value == 0) {
+                                return "-";
+                            } else {
+                                return value;
+                            }
+                        },
+                    }, {
+                        field: 'sjCount',
+                        title: '司机',
+                        halign: "center",
+                        align: 'right',
+                        valign: "middle",
+                        formatter: function (value, row, index) {
+                            if (value == 0) {
+                                return "-";
+                            } else {
+                                return value;
+                            }
+                        },
+                    }, {
+                        field: 'qtCount',
+                        title: '其它人员',
+                        halign: "center",
+                        align: 'right',
+                        valign: "middle",
+                        formatter: function (value, row, index) {
+                            if (value == 0) {
+                                return "-";
+                            } else {
+                                return value;
+                            }
+                        },
+                    }
+                ]
+
+        ];
+        var myChartFun = null;
+
+        $this.init = function () {
+            $.ajax({
+                type: 'POST',
+                async: false,
+                url: 'UpdateSvn?fileName=优加实施售后文档.xlsx&user=zouzhiyong&pwd=zouzhiyong&type=online',
+                beforeSend: function (XMLHttpRequest) {
+                    $(".loading-icon").show();
+                    $(".body-content").hide();
+                },
+                success: function (result) {
+                    $(".loading-icon").hide();
+                    $(".body-content").show();
+                },
+                complete: function (XMLHttpRequest, textStatus) {
+                    $(".loading-icon").hide();
+                    $(".body-content").show();
+                },
+                error: function (error) {
+
+                }
+            });
+
+            GetDateStr = function (AddDayCount) {
+                var dd = new Date();
+                dd.setDate(dd.getDate() + AddDayCount);//获取AddDayCount天后的日期
+                var y = dd.getFullYear();
+                var m = dd.getMonth() + 1;//获取当前月份的日期
+                var d = dd.getDate();
+                return y + "-" + m + "-" + d;
+            }
+
+            $("#days").val(1);
+
+            $(".btn-search").click(function () {
+                $this.TableDataInit();
+            })
+
+            //饼图
+            myChartFun = function (myChartArr) {
+                var myChart = myChartArr[0];// echarts.init(document.getElementById(myArray[0]));
+                var itemStyle = {
+                    normal: {
+                        borderWidth: 1.5,
+                        borderColor: '#ffffff'
+                    },
+                    emphasis: {
+                        shadowBlur: 10,
+                        shadowOffsetX: 0,
+                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                    }
+                };
+
+                var data = [];
+
+                myChartArr[2].map(function (item, index) {
+                    var obj = {
+                        value: myChartArr[4][index],
+                        name: myChartArr[2][index] + "【" + myChartArr[4][index] + "】",
+                        itemStyle: {
+                            normal: { color: myChartArr[3][index] }
+                        }
+                    }
+                    data.push(obj);
+                })
+
+                option = {
+                    title: {
+                        text: myChartArr[1],
+                        x: 'center',
+                        y: 'bottom',
+                        textStyle: {
+                            fontSize: '15',
+                            fontWeight: 'bold'
+                        }
+                    },
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: function (v) {
+                            return v.seriesName + "<br/>" + v.name + ":" + v.value + " (" + parseInt(v.percent) + ")%"
+                        },
+                        textStyle: {
+                            fontSize: '12'
+                        }
+                    },
+                    series: [
+                        {
+                            name: myChartArr[1],
+                            type: 'pie',
+                            radius: ['30%', '60%'],
+                            center: ['50%', '40%'],
+                            avoidLabelOverlap: true,
+                            labelLine: {
+                                length: 8,
+                                length2: 5,
+                            },
+                            label: {
+                                normal: {
+                                    show: true,
+                                    fontSize: '12',
+                                    fontWeight: 'normal',
+                                    //position: 'inside'
+                                },
+
+                                emphasis: {
+                                    show: true,
+                                    textStyle: {
+                                        fontSize: '12',
+                                        fontWeight: 'bold'
+                                    }
+                                }
+                            },
+                            data: data,
+                            itemStyle: itemStyle
+                        }
+                    ]
+                };
+                // 使用刚指定的配置项和数据显示图表。
+                myChart.setOption(option);
+                $(window).resize(function () {
+                    myChart.resize();
+                });
+            }
+        }
+
+        $this.getDesbord = function () {
+            //获取值
+            $.ajax({
+                type: 'POST',
+                url: 'FindHelpList?fileName=优加实施售后文档.xlsx&sheetName=汇总&headerRowIndex=0',
+                beforeSend: function (XMLHttpRequest) {
+                    $(".loading-icon").show();
+                },
+                success: function (data) {
+                    var result = data[0];
+
+                    totalValue.totalWSNumber = result.total_ws;//经销商总数
+                    totalValue.totalUSERNumber = result.total_user_number;//用户总数
+                    totalValue.numberEss = result.user_number_ess;//ESS用户数
+                    totalValue.numberElms = result.user_number_elms;//ELMS用户数
+                    totalValue.numberDms = result.user_number_dms;//DMS用户数
+                    totalValue.numberFin = result.user_number_fin;//FIN用户数
+                    totalValue.numberWpp = result.user_number_wpp;//WPP用户数
+                    totalValue.numberCust = result.user_number_cust;//自费用户数
+                    totalValue.numberTwo = result.user_number_two;//二批商用户数
+
+                    //赋值
+                    $("#totalWsNumberValue").html(totalValue.totalWSNumber);
+                    $("#totalUserNumberValue").html(totalValue.totalUSERNumber);
+
+
+
+                    var totalUserNumberTypeValue = document.getElementById("totalUserNumberTypeValue");
+                    var totalUserNumberModelValue = document.getElementById("totalUserNumberModelValue");
+
+
+                    //$("#totalUserNumberTypeValue").width($("#totalUserNumberTypeValue").height()*2);
+                    //$("#totalUserNumberModelValue").width($("#totalUserNumberModelValue").height()*2);
+
+                    var myChart1 = echarts.init(totalUserNumberTypeValue, null, { renderer: 'svg' });
+                    var totalUserNumberTypeValueArr = new Array(myChart1, "用户数【分项目】", ["WPP", "自费", "二批"], ["#73BF00", "#cc3fc8", "#538BFA"], [totalValue.numberWpp, totalValue.numberCust, totalValue.numberTwo]);
+                    myChartFun(totalUserNumberTypeValueArr);
+
+
+                    var myChart2 = echarts.init(totalUserNumberModelValue, null, { renderer: 'svg' });
+                    var totalUserNumberModelValueArr = new Array(myChart2, "用户数【分模块】", ["DMS", "ESS", "ELMS", "财务"], ["#73BF00", "#cc3fc8", "#538BFA", "#fac753"], [totalValue.numberDms, totalValue.numberEss, totalValue.numberElms, totalValue.numberFin]);
+                    myChartFun(totalUserNumberModelValueArr);
+
+
+                    $(".loading-icon").hide();
+                },
+                complete: function (XMLHttpRequest, textStatus) {
+                    $(".loading-icon").hide();
+                },
+                error: function (error) {
+                    //alert(error.responseText);
+                }
+            });
+
+        }
+
+        //获取值
+        $this.TableDataInit = function () {
+            $.ajax({
+                type: 'POST',
+                url: 'FindSqlList',
+                async:false,
+                data: { where: "1000225,1000142,1000147,1000247,1000175,1000220,1000216" },
+                beforeSend: function (XMLHttpRequest) {
+                    $(".loading-icon").show();
+                },
+                success: function (result) {
+                    data = [];
+                    totalCount.totalWsCount = result.totalWsCount;
+                    totalCount.totalUserCount = result.totalUserCount;
+                    totalCount.totalVehCount = result.totalVehCount;
+
+                    result.rows.map(function (item, index) {
+                        var obj = {};
+                        item.id = index + 1;
+                        item.noLoginWebDayNums = item.noLoginWebDay == null ? "-" : item.noLoginWebDayNums;
+                        item.noLoginAppDayNums = item.noLoginAppDay == null ? "-" : item.noLoginAppDayNums;
+
+                        data.push(item);
+                    })
+
+
+
+                    if ($table == null) {
+                        $this.tableInit();
+                    } else {
+                        $table.bootstrapTable('refreshOptions', {
+                            data: data,
+                            height: $(window).height() - $table.offset().top - 15,
+                            columns: columns,
+                        });
+                    }
+
+                    $(".loading-icon").hide();
+                },
+                complete: function (XMLHttpRequest, textStatus) {
+                    $(".loading-icon").hide();
+                },
+                error: function (error) {
+                    //alert(error.responseText);
+                }
+            });
+            //$.ajax({
+            //    type: 'POST',
+            //    url: 'FindHelpList?fileName=优加实施售后文档.xlsx&sheetName=经销商数据查询&headerRowIndex=1',
+            //    beforeSend:function(XMLHttpRequest){
+            //        $(".loading-icon").show();
+            //    },
+            //    success: function (result) {
+            //        data = [];
+            //        result.dbRows.map(function (item, index) {
+            //            var filterExcelRows = result.excelRows.filter(function (_item) { return _item["经销商编码"] != "" && _item["经销商编码"] == item.WSID })[0];
+            //            var dms = isNaN(parseFloat(filterExcelRows["DMS人数"])) ? 0 : parseFloat(filterExcelRows["DMS人数"]);
+            //            var elms = isNaN(parseFloat(filterExcelRows["ELMS人数"])) ? 0 : parseFloat(filterExcelRows["ELMS人数"]);
+            //            var ess = isNaN(parseFloat(filterExcelRows["ESS人数"])) ? 0 : parseFloat(filterExcelRows["ESS人数"]);
+            //            var fin = isNaN(parseFloat(filterExcelRows["财务人数"])) ? 0 : parseFloat(filterExcelRows["财务人数"]);
+
+            //            var obj = {};
+            //            obj.id = index + 1;
+            //            obj.bu = filterExcelRows["事业部"];
+            //            obj.city = filterExcelRows["城市"];
+            //            obj.WSName = filterExcelRows["经销商名称"];
+            //            obj.onlineDate = item.onlineDate;//filterExcelRows["正式上线日期"];
+            //            obj.dms = dms;
+            //            obj.elms = elms;
+            //            obj.ess = ess;
+            //            obj.fin = fin;
+            //            obj.noLoginWebDayNums = item.noLoginWebDay == null ? "-" : item.noLoginWebDayNums;
+            //            obj.noLoginAppDayNums = item.noLoginAppDay == null ? "-" : item.noLoginAppDayNums;
+            //            obj.noLoginWebDay = item.noLoginWebDay;
+            //            obj.noLoginAppDay = item.noLoginAppDay;
+            //            obj.noInputFyDayNums = 0;
+            //            obj.noBfDayNums = 0;
+
+            //            data.push(obj);
+            //        })
+
+
+
+            //        if ($table==null) {
+            //            $this.tableInit();
+            //        } else {
+            //            $table.bootstrapTable('refreshOptions', {
+            //                data: data,
+            //                height: $(window).height() - $table.offset().top - 15,
+            //                columns: columns,
+            //            });
+            //        }
+
+            //        $(".loading-icon").hide();
+            //    },
+            //    complete: function (XMLHttpRequest, textStatus) {
+            //        $(".loading-icon").hide();
+            //    },
+            //    error: function (error) {
+            //        //alert(error.responseText);
+            //    }
+            //});
+        }
+
+        $this.tableInit = function () {
+            $table = $('#table');
+            $table.bootstrapTable({
+                data: data,
+                height: $(window).height() - $table.offset().top - 15,
+                columns: columns,
+            });
+
+            $(window).resize(function () {
+                $table.bootstrapTable('resetView', { height: $(window).height() - $(".table").offset().top - 15 });//随窗口变化改变高度
+            })
+        }
+
+
+        $this.init();
+        $this.getDesbord();
+        $this.TableDataInit();
+
+
+    });
+
+
+
+</script>

@@ -1,0 +1,32 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/jquery")
+    <style>
+        * { font-family: 'Microsoft YaHei UI'; }
+        .loading-icon { position: absolute; width: 100%; height: 100%; overflow: hidden; top: 0px; background: rgb(230,230,230); filter: progid:DXImageTransform.Microsoft.Alpha(opacity=40); -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(opacity=40)"; background: url(/Content/img/login-loading.gif) center no-repeat; background-color: rgba(230,230,230,0.4); text-align: center; color: #444 !important; z-index: 9999; }
+        div[name='loginloading'] { position: fixed; top: 70%; left: 42%; padding-top: 40px; padding-left: 12px; font-size: 16px; color: #676767; width: 300px; height: 300px; z-index: 7; margin: -16px 0 0 -16px; }
+        .body-content{display:none}
+    </style>
+</head>
+<body>
+    <div class="loading-icon" id="_loginloadIcon" style="display: block;background-color:#eee;">
+        <div name="loginloading">正在加载中，请耐心等待...</div>
+    </div>
+    <div class="body-content">
+        @RenderBody()
+    </div>
+
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/common")
+    @RenderSection("scripts", required: false)
+
+
+</body>
+</html>

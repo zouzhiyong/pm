@@ -1,0 +1,63 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>优加实施售后平台</title>
+    @Styles.Render("~/Content/css")
+    @Styles.Render("~/Site/css")
+    @Scripts.Render("~/bundles/jquery")
+
+    <style>
+            * { font-size: 12px; font-family:'Microsoft YaHei UI'}
+            html, body { height: 100%; }
+            .body-content { height: calc(100% - 50px); }
+            .container-fluid { height: 100%; }
+            .navbar-inverse { background-color: #538BFA; color: #fff; }
+                .navbar-inverse .navbar-brand { color: #fff; }
+
+
+            .sidebar-nav { background: #212529; }
+                .sidebar-nav ul { padding: 0; margin: 0; list-style: none; background: #343a40; }
+
+                .sidebar-nav .metismenu { background: #212529; display: -webkit-box; display: -ms-flexbox; display: flex; -webkit-box-orient: vertical; -webkit-box-direction: normal; -ms-flex-direction: column; flex-direction: column; }
+
+                    .sidebar-nav .metismenu li + li { margin-top: 5px; }
+
+                    .sidebar-nav .metismenu li:first-child { margin-top: 5px; }
+                    .sidebar-nav .metismenu li:last-child { margin-bottom: 5px; }
+
+
+                    .sidebar-nav .metismenu > li { /*-webkit-box-flex: 1;
+        -ms-flex: 1 1 0%;
+        flex: 1 1 0%;*/ display: -webkit-box; display: -ms-flexbox; display: flex; -webkit-box-orient: vertical; -webkit-box-direction: normal; -ms-flex-direction: column; flex-direction: column; position: relative; }
+                    .sidebar-nav .metismenu a { position: relative; display: block; padding: 13px 15px; color: #adb5bd; outline-width: 0; transition: all .3s ease-out; }
+
+                    .sidebar-nav .metismenu ul a { padding: 10px 15px 10px 30px; }
+
+                    .sidebar-nav .metismenu ul ul a { padding: 10px 15px 10px 45px; }
+
+                    .sidebar-nav .metismenu a:hover,
+                    .sidebar-nav .metismenu a:focus,
+                    .sidebar-nav .metismenu a:active { color: #f8f9fa; text-decoration: none; background: #043188; }
+
+
+            .metismenu li a i { margin-right: 10px; font-size: 14px; }
+    </style>
+
+</head>
+<body>
+    
+    <div class="container-fluid body-content">
+        @RenderBody()
+    </div>
+
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/metisMenu")
+    @Scripts.Render("~/bundles/modernizr")
+    @RenderSection("scripts", required: false)
+
+
+</body>
+</html>
