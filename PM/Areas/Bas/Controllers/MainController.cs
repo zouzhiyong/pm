@@ -2,12 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Data.Common;
-using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Web;
 using System.Web.Mvc;
 using PM.Common;
 using PM.Models;
@@ -81,6 +78,8 @@ namespace PM.Areas.Bas.Controllers
                             min(c.logintime) as onlineDate,
                             max(c.logintimeWeb)  as noLoginWebDay,
                             max(c.logintimeApp) as noLoginAppDay,
+                            max(f.RecTimestamp) as RecTimestamp,
+                            max(g.VisitDate) as VisitDate,
                             datediff(day,max(c.logintimeWeb),GETDATE()) as noLoginWebDayNums,
 							datediff(day,max(c.logintimeApp),GETDATE()) as noLoginAppDayNums,
                             datediff(day,max(f.RecTimestamp),GETDATE()) as noInputFyDayNums,
@@ -239,6 +238,5 @@ namespace PM.Areas.Bas.Controllers
             return Json(stuLis);
 
         }
-
-    }
+    }    
 }

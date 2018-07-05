@@ -10,7 +10,7 @@
 <script type="text/javascript" src="~/Scripts/locales/bootstrap-datepicker.zh-CN.min.js"></script>
 <style>
     td, span, div { font-size: 12px; }
-    .bootstrap-table .table { table-layout: fixed; }
+    .bootstrap-table .table { table-layout: fixed;max-width: 2000px; }
     .fixed-table-container, .bootstrap-table .table { border-radius: 0; table-layout: fixed; }
         .bootstrap-table .table th { background-color: #0c125a; border-left: none; color: #fff; }
         .bootstrap-table .table:not(.table-condensed), .bootstrap-table .table:not(.table-condensed) > tbody > tr > td, .bootstrap-table .table:not(.table-condensed) > tbody > tr > th, .bootstrap-table .table:not(.table-condensed) > tfoot > tr > td, .bootstrap-table .table:not(.table-condensed) > tfoot > tr > th, .bootstrap-table .table:not(.table-condensed) > thead > tr > td { padding: 5px; }
@@ -20,8 +20,8 @@
 </style>
 <div class="container-fluid">
     <div class="row form-inline" style="margin: 10px;">
-        <div class="col-xs-2"><h4><i>经销商使用情况</i></h4></div>
-        <div class="col-xs-3">
+        <div class="col-xs-3"><h4><i>经销商使用情况</i></h4></div>
+        <div class="col-xs-5">
             <div class="form-group">
                 <span for="days">未登录天数:</span>
                 <div class="form-group">
@@ -31,8 +31,10 @@
                     </span>
                 </div>
                 <span style="color:#910606;">红色标注</span>
-                <button type="button" class="btn btn-primary btn-sm btn-search">查询</button>
             </div>
+        </div>
+        <div class="col-xs-4">
+            <button type="button" class="btn btn-primary btn-sm btn-search">重新查询</button>
         </div>
     </div>
     <div class="row" style="border: 1px solid #d7d7d7; margin: 10px; padding: 5px; box-shadow: 2px 2px 5px rgba(188, 188, 188, 0.349019607843137)">
@@ -161,7 +163,7 @@
                     title: '最近连续天数',
                     align: 'right',
                     halign: "center",
-                    width: 280,
+                    width: 260,
                     colspan: 4,
                     rowspan: 1,
                 },
@@ -170,7 +172,7 @@
                     title: '各类型用户数',
                     align: 'right',
                     halign: "center",
-                    width: 320,
+                    width: 290,
                     colspan: 7,
                     rowspan: 1,
                 }
@@ -180,6 +182,13 @@
                         field: 'noLoginWebDayNums',
                         title: '<i class="fa fa-television fa-lg"></i><br>未登录',
                         align: 'right',
+                        formatter: function (value, row, index) {
+                            if (value == null) {
+                                return "-";
+                            } else {
+                                return "<div title='最近登录时间为：" + new Date(eval('new ' + row.noLoginWebDay.substr(1, row.noLoginWebDay.length - 2))).Format("yyyy-MM-dd") + "'>" + value + "</div>";
+                            }                            
+                        },
                         cellStyle: function (value, row, field) {
                             if (value == null) {
                                 return { css: { "background-color": "#9b9898" } };
@@ -188,14 +197,19 @@
                                     return { css: { "background-color": "#910606", "color": "#fff" } };
                                 }
                             }
-
-
                             return "";
                         }
                     }, {
                         field: 'noLoginAppDayNums',
                         title: '<i class="fa fa-tablet fa-lg"></i><br>未登录',
                         align: 'right',
+                        formatter: function (value, row, index) {
+                            if (value == null) {
+                                return "-";
+                            } else {
+                                return "<div title='最近登录时间为：" + new Date(eval('new ' + row.noLoginAppDay.substr(1, row.noLoginAppDay.length - 2))).Format("yyyy-MM-dd") + "'>" + value + "</div>";
+                            }
+                        },
                         cellStyle: function (value, row, field) {
                             if (value == null) {
                                 return { css: { "background-color": "#9b9898" } };
@@ -211,6 +225,13 @@
                         field: 'noInputFyDayNums',
                         title: '<i class="fa fa fa-edit fa-lg"></i><br>未录费用',
                         align: 'right',
+                        formatter: function (value, row, index) {
+                            if (value == null) {
+                                return "-";
+                            } else {
+                                return "<div title='最近录入时间为：" + new Date(eval('new ' + row.RecTimestamp.substr(1, row.RecTimestamp.length - 2))).Format("yyyy-MM-dd") + "'>" + value + "</div>";
+                            }
+                        },
                         cellStyle: function (value, row, field) {
                             if (value == null) {
                                 return { css: { "background-color": "#9b9898" } };
@@ -226,6 +247,13 @@
                         field: 'noBfDayNums',
                         title: '<i class="fa fa-user-times fa-lg"></i><br>未拜访',
                         align: 'right',
+                        formatter: function (value, row, index) {
+                            if (value == null) {
+                                return "-";
+                            } else {
+                                return "<div title='最近拜访时间为：" + new Date(eval('new ' + row.VisitDate.substr(1, row.VisitDate.length - 2))).Format("yyyy-MM-dd") + "'>" + value + "</div>";
+                            }
+                        },
                         cellStyle: function (value, row, field) {
                             if (value == null) {
                                 return { css: { "background-color": "#9b9898" } };
@@ -291,7 +319,7 @@
                         },
                     }, {
                         field: 'cxywyCount',
-                        title: '车销业务员',
+                        title: '车销代表',
                         halign: "center",
                         align: 'right',
                         valign: "middle",
@@ -423,7 +451,7 @@
                             axisLine: {
                                 show: false,
                                 lineStyle: {
-                                    width:0.5,
+                                    width: 0.5,
                                     color: "#000000",
                                     type: "solid"
                                 }
@@ -555,10 +583,10 @@
                     result.rows.map(function (item, index) {
                         var obj = {};
                         item.id = index + 1;
-                        item.noLoginWebDayNums = item.noLoginWebDayNums == null ? "-" : item.noLoginWebDayNums;
-                        item.noLoginAppDayNums = item.noLoginAppDayNums == null ? "-" : item.noLoginAppDayNums;
-                        item.noInputFyDayNums = item.noInputFyDayNums == null ? "-" : item.noInputFyDayNums;
-                        item.noBfDayNums = item.noBfDayNums == null ? "-" : item.noBfDayNums;
+                        item.noLoginWebDayNums = item.noLoginWebDayNums;
+                        item.noLoginAppDayNums = item.noLoginAppDayNums;
+                        item.noInputFyDayNums = item.noInputFyDayNums;
+                        item.noBfDayNums = item.noBfDayNums;
 
                         data.push(item);
                     })

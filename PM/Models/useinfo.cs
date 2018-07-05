@@ -13,6 +13,8 @@ namespace PM.Models
         public DateTime? onlineDate { get; set; }
         public DateTime? noLoginWebDay { get; set; }
         public DateTime? noLoginAppDay { get; set; }
+        public DateTime? RecTimestamp { get; set; }
+        public DateTime? VisitDate { get; set; }
         public int? noLoginWebDayNums { get; set; }
         public int? noLoginAppDayNums { get; set; }
         public int userCount { get; set; }
