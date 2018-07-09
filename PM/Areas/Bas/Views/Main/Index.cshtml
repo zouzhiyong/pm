@@ -391,6 +391,7 @@
             $(".btn-cache").click(function () {
                 $.ajax({
                     type: 'POST',
+                    async:false,
                     url: 'ClearCacheData',
                     beforeSend: function (XMLHttpRequest) {
                         $(".loading-icon").show();
