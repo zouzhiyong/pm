@@ -66,15 +66,20 @@ namespace PM.Areas.Bas.Controllers
         [HttpPost]
         public JsonResult FindSqlList(string where)
         {
-            StuInfoDBContext stuContext = new StuInfoDBContext();
-            StringBuilder strSql = new StringBuilder();
-            StringBuilder whereStr = new StringBuilder();
-            for (int i = 0; i < where.Split(',').Length; i++)
-            {
-                whereStr.Append(" and  a.WSID<>'" + where.Split(',')[i].ToString() + "'");
-            }
+            var cache = CacheHelper.GetCache("mydata");
+            object obj = null;
 
-            strSql.Append(@"select a.AreaName,a.WSID,a.WSName,
+            if (cache == null)
+            {
+                StuInfoDBContext stuContext = new StuInfoDBContext();
+                StringBuilder strSql = new StringBuilder();
+                StringBuilder whereStr = new StringBuilder();
+                for (int i = 0; i < where.Split(',').Length; i++)
+                {
+                    whereStr.Append(" and  a.WSID<>'" + where.Split(',')[i].ToString() + "'");
+                }
+
+                strSql.Append(@"select a.AreaName,a.WSID,a.WSName,
                             min(c.logintime) as onlineDate,
                             max(c.logintimeWeb)  as noLoginWebDay,
                             max(c.logintimeApp) as noLoginAppDay,
@@ -137,15 +142,15 @@ namespace PM.Areas.Bas.Controllers
                             group by a.AreaName,a.WSID,a.WSName,e.vehCount,d.userCount,d.xsdbCount,d.xszgCount,d.xsjlCount,d.xszjCount,d.cxywyCount,d.sjCount,d.qtCount
                             order by noLoginWebDay,noLoginAppDay");
 
-            string str = String.Format(strSql.ToString(), whereStr.ToString());
+                string str = String.Format(strSql.ToString(), whereStr.ToString());
 
-            var userLis = stuContext.Database.SqlQuery<useInfo>(str).ToList();
-            var totalWsCount = userLis.Count<useInfo>();
-            var totalUserCount = userLis.Sum<useInfo>(t => t.userCount);
-            var totalVehCount = userLis.Sum<useInfo>(t => t.vehCount);
+                var userLis = stuContext.Database.SqlQuery<useInfo>(str).ToList();
+                var totalWsCount = userLis.Count<useInfo>();
+                var totalUserCount = userLis.Sum<useInfo>(t => t.userCount);
+                var totalVehCount = userLis.Sum<useInfo>(t => t.vehCount);
 
-            strSql.Clear();
-            strSql.Append(@"select c.ApplicationType,count(distinct a.UserID) as moduleCount
+                strSql.Clear();
+                strSql.Append(@"select c.ApplicationType,count(distinct a.UserID) as moduleCount
                             from sys_User a
                             left join Sys_user_role b
                             on a.UserID=b.UserID
@@ -163,12 +168,22 @@ namespace PM.Areas.Bas.Controllers
                             where d.WSType=1 and isnull(d.IsValid,1)=1 
                             {0}
                             group by c.ApplicationType order by moduleCount desc");
-            str = String.Format(strSql.ToString(), whereStr.ToString());
+                str = String.Format(strSql.ToString(), whereStr.ToString());
 
-            var moduleLis = stuContext.Database.SqlQuery<moduleInfo>(str).ToList();
-            
+                var moduleLis = stuContext.Database.SqlQuery<moduleInfo>(str).ToList();
 
-            return Json(new { rows= userLis, totalWsCount= totalWsCount, totalUserCount = totalUserCount , totalVehCount = totalVehCount, moduleLis= moduleLis });
+                obj = new { rows = userLis, totalWsCount = totalWsCount, totalUserCount = totalUserCount, totalVehCount = totalVehCount, moduleLis = moduleLis };
+                
+                //插入cache 缓存30秒
+                CacheHelper.SetCache("mydata", obj, DateTime.Now.AddMinutes(5), TimeSpan.Zero);
+            }
+            else
+            {
+                obj = (object)cache;
+
+            }
+
+            return Json(obj);
         }
 
         /// <summary>
@@ -238,5 +253,5 @@ namespace PM.Areas.Bas.Controllers
             return Json(stuLis);
 
         }
-    }    
+    }
 }
