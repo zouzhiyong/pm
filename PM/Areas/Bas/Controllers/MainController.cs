@@ -105,7 +105,7 @@ namespace PM.Areas.Bas.Controllers
 							left join Bas_Area t3
 							on t2.ParentCode=t3.AreaCode
 							) a
-                            left join (select WSID,UserID from sys_user) b
+                            left join (select WSID,UserID from sys_user where left(UserName,5)<>'admin') b
                             on b.WSID=a.WSID
                             left join 
                             (
@@ -128,7 +128,7 @@ namespace PM.Areas.Bas.Controllers
                                 count(case when UserType='0006' then UserID end) as sjCount,
 								count(case when UserType='0007' then UserID end) as cxywyCount,
 								count(case when isnull(UserType,'')<>'0001' and isnull(UserType,'')<>'0002' and isnull(UserType,'')<>'0003' and isnull(UserType,'')<>'0004' and isnull(UserType,'')<>'0006' and isnull(UserType,'')<>'0007' then UserID end) as qtCount  
-								from sys_user where isnull(IsValid,1)=1 group by wsid
+								from sys_user where isnull(IsValid,1)=1  and left(UserName,5)<>'admin' group by wsid
 							) d
 							on a.wsid=d.wsid
                             left join (select WSID,count(VehID) as vehCount from Bas_Vehicle where isnull(IsValid,1)=1 and isnull(GpsID,'')<>'' group by WSID) e
@@ -165,7 +165,7 @@ namespace PM.Areas.Bas.Controllers
                             on c.RoleID=a.RoleID
                             inner join (select WSID,WSName,WSType,IsValid from Bas_WS) d
                             on a.WSID=d.WSID
-                            where d.WSType=1 and isnull(d.IsValid,1)=1 
+                            where d.WSType=1 and isnull(d.IsValid,1)=1 and left(a.UserName,5)<>'admin'
                             {0}
                             group by c.ApplicationType order by moduleCount desc");
                 str = String.Format(strSql.ToString(), whereStr.ToString());
@@ -175,7 +175,7 @@ namespace PM.Areas.Bas.Controllers
                 obj = new { rows = userLis, totalWsCount = totalWsCount, totalUserCount = totalUserCount, totalVehCount = totalVehCount, moduleLis = moduleLis };
                 
                 //插入cache 缓存12小时
-                CacheHelper.SetCache("mydata", obj, DateTime.Now.AddHours(24), TimeSpan.Zero);
+                CacheHelper.SetCache("mydata", obj, DateTime.Now.AddHours(12), TimeSpan.Zero);
             }
             else
             {
@@ -187,7 +187,7 @@ namespace PM.Areas.Bas.Controllers
         }
 
         [HttpPost]
-        public JsonResult FindCacheData()
+        public JsonResult ClearCacheData()
         {
             try
             {
