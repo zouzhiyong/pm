@@ -174,8 +174,8 @@ namespace PM.Areas.Bas.Controllers
 
                 obj = new { rows = userLis, totalWsCount = totalWsCount, totalUserCount = totalUserCount, totalVehCount = totalVehCount, moduleLis = moduleLis };
                 
-                //插入cache 缓存30秒
-                CacheHelper.SetCache("mydata", obj, DateTime.Now.AddMinutes(5), TimeSpan.Zero);
+                //插入cache 缓存12小时
+                CacheHelper.SetCache("mydata", obj, DateTime.Now.AddHours(24), TimeSpan.Zero);
             }
             else
             {
@@ -184,6 +184,19 @@ namespace PM.Areas.Bas.Controllers
             }
 
             return Json(obj);
+        }
+
+        [HttpPost]
+        public JsonResult FindCacheData()
+        {
+            try
+            {
+                CacheHelper.RemoveAllCache("mydata");
+                return Json("清除成功");
+            }catch(Exception e)
+            {
+                return Json(e.Message.ToString());
+            }
         }
 
         /// <summary>
