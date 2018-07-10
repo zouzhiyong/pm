@@ -15,6 +15,7 @@ namespace PM.Models
         public DateTime? noLoginAppDay { get; set; }
         public DateTime? RecTimestamp { get; set; }
         public DateTime? VisitDate { get; set; }
+        public DateTime? OrderDate { get; set; }
         public int? noLoginWebDayNums { get; set; }
         public int? noLoginAppDayNums { get; set; }
         public int userCount { get; set; }
@@ -28,6 +29,7 @@ namespace PM.Models
         public int qtCount { get; set; }
         public int? noInputFyDayNums { get; set; }
         public int? noBfDayNums { get; set; }
+        public int? noOrderDayNums { get; set; }
     }
     public class moduleInfo
     {

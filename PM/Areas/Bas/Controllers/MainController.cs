@@ -69,26 +69,28 @@ namespace PM.Areas.Bas.Controllers
             var cache = CacheHelper.GetCache("mydata");
             object obj = null;
 
-            if (cache == null)
+            //if (cache == null)
+            //{
+            StuInfoDBContext stuContext = new StuInfoDBContext();
+            StringBuilder strSql = new StringBuilder();
+            StringBuilder whereStr = new StringBuilder();
+            for (int i = 0; i < where.Split(',').Length; i++)
             {
-                StuInfoDBContext stuContext = new StuInfoDBContext();
-                StringBuilder strSql = new StringBuilder();
-                StringBuilder whereStr = new StringBuilder();
-                for (int i = 0; i < where.Split(',').Length; i++)
-                {
-                    whereStr.Append(" and  a.WSID<>'" + where.Split(',')[i].ToString() + "'");
-                }
+                whereStr.Append(" and  a.WSID<>'" + where.Split(',')[i].ToString() + "'");
+            }
 
-                strSql.Append(@"select a.AreaName,a.WSID,a.WSName,
-                            min(c.logintime) as onlineDate,
-                            max(c.logintimeWeb)  as noLoginWebDay,
-                            max(c.logintimeApp) as noLoginAppDay,
+            strSql.Append(@"select a.AreaName,a.WSID,a.WSName,
+                            min(c.onlineDate) as onlineDate,
+							max(c.noLoginWebDay) as noLoginWebDay,
+							max(c.noLoginAppDay) as noLoginAppDay,
                             max(f.RecTimestamp) as RecTimestamp,
                             max(g.VisitDate) as VisitDate,
-                            datediff(day,max(c.logintimeWeb),GETDATE()) as noLoginWebDayNums,
-							datediff(day,max(c.logintimeApp),GETDATE()) as noLoginAppDayNums,
+                            max(h.RecTimeStamp) as OrderDate,
+                            datediff(day,max(c.noLoginWebDay),GETDATE()) as noLoginWebDayNums,
+							datediff(day,max(c.noLoginAppDay),GETDATE()) as noLoginAppDayNums,
                             datediff(day,max(f.RecTimestamp),GETDATE()) as noInputFyDayNums,
                             datediff(day,max(g.VisitDate),GETDATE()) as noBfDayNums,
+                            datediff(day,max(h.RecTimeStamp),GETDATE()) as noOrderDayNums,
                             d.userCount,
                             isnull(e.vehCount,0) as vehCount,
                             d.xsdbCount,
@@ -111,10 +113,10 @@ namespace PM.Areas.Bas.Controllers
                             (
                                 select 
                                     userid,
-                                    logintime,
-                                    case when workstation='Mobile APP' then logintime end logintimeApp, 
-                                    case when workstation='DMS WEB' then logintime end logintimeWeb
-                                from SYS_USERLOG
+									min(logintime) as onlineDate,
+                                    max(case when workstation='Mobile APP' then logintime end) as noLoginAppDay, 
+                                    max(case when workstation='DMS WEB' then logintime end) as noLoginWebDay									
+                                from SYS_USERLOG group by userid
                             ) c
                             on b.UserID=c.userid
                             left join
@@ -137,20 +139,22 @@ namespace PM.Areas.Bas.Controllers
                             on a.WSID=f.WSID
                             left join (select WSID,max(VisitDate) as VisitDate from SFA_Visit group by WSID) g
                             on a.WSID=g.WSID
+                            left join (select WSID,max(RecTimeStamp) as RecTimeStamp from SFA_Order_Header group by WSID) h
+							on a.WSID=h.WSID
                             where a.WSType=1 and isnull(a.IsValid,1)=1 
                             {0}
                             group by a.AreaName,a.WSID,a.WSName,e.vehCount,d.userCount,d.xsdbCount,d.xszgCount,d.xsjlCount,d.xszjCount,d.cxywyCount,d.sjCount,d.qtCount
                             order by noLoginWebDay,noLoginAppDay");
 
-                string str = String.Format(strSql.ToString(), whereStr.ToString());
+            string str = String.Format(strSql.ToString(), whereStr.ToString());
 
-                var userLis = stuContext.Database.SqlQuery<useInfo>(str).ToList();
-                var totalWsCount = userLis.Count<useInfo>();
-                var totalUserCount = userLis.Sum<useInfo>(t => t.userCount);
-                var totalVehCount = userLis.Sum<useInfo>(t => t.vehCount);
+            var userLis = stuContext.Database.SqlQuery<useInfo>(str).ToList();
+            var totalWsCount = userLis.Count<useInfo>();
+            var totalUserCount = userLis.Sum<useInfo>(t => t.userCount);
+            var totalVehCount = userLis.Sum<useInfo>(t => t.vehCount);
 
-                strSql.Clear();
-                strSql.Append(@"select c.ApplicationType,count(distinct a.UserID) as moduleCount
+            strSql.Clear();
+            strSql.Append(@"select c.ApplicationType,count(distinct a.UserID) as moduleCount
                             from sys_User a
                             left join Sys_user_role b
                             on a.UserID=b.UserID
@@ -168,20 +172,20 @@ namespace PM.Areas.Bas.Controllers
                             where d.WSType=1 and isnull(d.IsValid,1)=1 and left(a.UserName,5)<>'admin'
                             {0}
                             group by c.ApplicationType order by moduleCount desc");
-                str = String.Format(strSql.ToString(), whereStr.ToString());
+            str = String.Format(strSql.ToString(), whereStr.ToString());
 
-                var moduleLis = stuContext.Database.SqlQuery<moduleInfo>(str).ToList();
+            var moduleLis = stuContext.Database.SqlQuery<moduleInfo>(str).ToList();
 
-                obj = new { rows = userLis, totalWsCount = totalWsCount, totalUserCount = totalUserCount, totalVehCount = totalVehCount, moduleLis = moduleLis };
-                
-                //插入cache 缓存12小时
-                CacheHelper.SetCache("mydata", obj, DateTime.Now.AddHours(12), TimeSpan.Zero);
-            }
-            else
-            {
-                obj = (object)cache;
+            obj = new { rows = userLis, totalWsCount = totalWsCount, totalUserCount = totalUserCount, totalVehCount = totalVehCount, moduleLis = moduleLis };
 
-            }
+            //插入cache 缓存12小时
+            //CacheHelper.SetCache("mydata", obj, DateTime.Now.AddHours(12), TimeSpan.Zero);
+            //}
+            //else
+            //{
+            //    obj = (object)cache;
+
+            //}
 
             return Json(obj);
         }
@@ -193,7 +197,8 @@ namespace PM.Areas.Bas.Controllers
             {
                 CacheHelper.RemoveAllCache("mydata");
                 return Json("清除成功");
-            }catch(Exception e)
+            }
+            catch (Exception e)
             {
                 return Json(e.Message.ToString());
             }
