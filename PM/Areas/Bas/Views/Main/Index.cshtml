@@ -35,34 +35,34 @@
         </div>
         <div class="col-xs-4">
             <button type="button" class="btn btn-primary btn-sm btn-search">重新查询</button>
-            @*<button type="button" class="btn btn-primary btn-sm btn-cache">清除缓存</button>*@
+            <button type="button" class="btn btn-primary btn-sm btn-cache">清除缓存</button>
         </div>
-        @*<div class="col-xs-offset-8 col-xs-4">默认缓存数据12小时，如需最新数据请先清除缓存再查询</div>*@
+        <div class="col-xs-offset-8 col-xs-4">默认缓存数据12小时，如需最新数据请先清除缓存再查询</div>
     </div>
     <div class="row" style="border: 1px solid #d7d7d7; margin: 10px; padding: 5px; box-shadow: 2px 2px 5px rgba(188, 188, 188, 0.349019607843137)">
         <div class="col-xs-2">
-            <div style="height: 180px;text-align:center;">
-                <span id="totalWsNumberValue" style="font-size: 55px; color: #ffb11b; line-height: 150px;font-weight:bold;font-family:'Times New Roman'">0</span>
+            <div style="height: 130px;text-align:center;">
+                <span id="totalWsNumberValue" style="font-size: 55px; color: #ffb11b; line-height: 100px;font-weight:bold;font-family:'Times New Roman'">0</span>
                 <br />
                 <span id="totolWsNumberLabel" style="font-size: 12px;font-weight:bold; line-height: 30px;">经销商总数</span>
             </div>
         </div>
         <div class="col-xs-2">
-            <div style="height: 180px;text-align:center;">
-                <span id="totalUserNumberValue" style="font-size: 55px; color: #73BF00; line-height: 150px;font-weight:bold;font-family:'Times New Roman'">0</span>
+            <div style="height: 130px;text-align:center;">
+                <span id="totalUserNumberValue" style="font-size: 55px; color: #73BF00; line-height: 100px;font-weight:bold;font-family:'Times New Roman'">0</span>
                 <br />
                 <span id="totalUserNumberLabel" style="font-size: 12px;font-weight:bold; line-height: 30px;">用户总数</span>
             </div>
         </div>
         <div class="col-xs-2">
-            <div style="height: 180px;text-align:center;">
-                <span id="totalVehNumberValue" style="font-size: 55px; color: #c009ca; line-height: 150px;font-weight:bold;font-family:'Times New Roman'">0</span>
+            <div style="height: 130px;text-align:center;">
+                <span id="totalVehNumberValue" style="font-size: 55px; color: #c009ca; line-height: 100px;font-weight:bold;font-family:'Times New Roman'">0</span>
                 <br />
                 <span id="totalVehNumberLabel" style="font-size: 12px;font-weight:bold; line-height: 30px;">GPS车辆总数</span>
             </div>
         </div>
         <div class="col-xs-6">
-            <div id="moduleUserCount" style="height: 150px; padding: 10px 0px 10px 0px"></div>
+            <div id="moduleUserCount" style="height: 100px; padding: 3px 0px 3px 0px"></div>
             <div style="font-size: 12px;font-weight:bold; line-height: 30px;text-align:center;">各模块使用用户数 【由于一个用户可能对应多个模块，用户数之和可能大于总用户数】</div>
         </div>
     </div>
@@ -510,7 +510,8 @@
                             },
                             axisLabel: {
                                 textStyle: {
-                                    color: '#999'
+                                    color: '#999',
+                                    fontSize: '9',
                                 }
                             }
 

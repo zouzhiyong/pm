@@ -69,17 +69,17 @@ namespace PM.Areas.Bas.Controllers
             var cache = CacheHelper.GetCache("mydata");
             object obj = null;
 
-            //if (cache == null)
-            //{
-            StuInfoDBContext stuContext = new StuInfoDBContext();
-            StringBuilder strSql = new StringBuilder();
-            StringBuilder whereStr = new StringBuilder();
-            for (int i = 0; i < where.Split(',').Length; i++)
+            if (cache == null)
             {
-                whereStr.Append(" and  a.WSID<>'" + where.Split(',')[i].ToString() + "'");
-            }
+                StuInfoDBContext stuContext = new StuInfoDBContext();
+                StringBuilder strSql = new StringBuilder();
+                StringBuilder whereStr = new StringBuilder();
+                for (int i = 0; i < where.Split(',').Length; i++)
+                {
+                    whereStr.Append(" and  a.WSID<>'" + where.Split(',')[i].ToString() + "'");
+                }
 
-            strSql.Append(@"select a.AreaName,a.WSID,a.WSName,
+                strSql.Append(@"select a.AreaName,a.WSID,a.WSName,
                             min(c.onlineDate) as onlineDate,
 							max(c.noLoginWebDay) as noLoginWebDay,
 							max(c.noLoginAppDay) as noLoginAppDay,
@@ -146,15 +146,15 @@ namespace PM.Areas.Bas.Controllers
                             group by a.AreaName,a.WSID,a.WSName,e.vehCount,d.userCount,d.xsdbCount,d.xszgCount,d.xsjlCount,d.xszjCount,d.cxywyCount,d.sjCount,d.qtCount
                             order by noLoginWebDay,noLoginAppDay");
 
-            string str = String.Format(strSql.ToString(), whereStr.ToString());
+                string str = String.Format(strSql.ToString(), whereStr.ToString());
 
-            var userLis = stuContext.Database.SqlQuery<useInfo>(str).ToList();
-            var totalWsCount = userLis.Count<useInfo>();
-            var totalUserCount = userLis.Sum<useInfo>(t => t.userCount);
-            var totalVehCount = userLis.Sum<useInfo>(t => t.vehCount);
+                var userLis = stuContext.Database.SqlQuery<useInfo>(str).ToList();
+                var totalWsCount = userLis.Count<useInfo>();
+                var totalUserCount = userLis.Sum<useInfo>(t => t.userCount);
+                var totalVehCount = userLis.Sum<useInfo>(t => t.vehCount);
 
-            strSql.Clear();
-            strSql.Append(@"select c.ApplicationType,count(distinct a.UserID) as moduleCount
+                strSql.Clear();
+                strSql.Append(@"select c.ApplicationType,count(distinct a.UserID) as moduleCount
                             from sys_User a
                             left join Sys_user_role b
                             on a.UserID=b.UserID
@@ -172,20 +172,21 @@ namespace PM.Areas.Bas.Controllers
                             where d.WSType=1 and isnull(d.IsValid,1)=1 and left(a.UserName,5)<>'admin'
                             {0}
                             group by c.ApplicationType order by moduleCount desc");
-            str = String.Format(strSql.ToString(), whereStr.ToString());
+                str = String.Format(strSql.ToString(), whereStr.ToString());
 
-            var moduleLis = stuContext.Database.SqlQuery<moduleInfo>(str).ToList();
+                var moduleLis = stuContext.Database.SqlQuery<moduleInfo>(str).ToList();
 
-            obj = new { rows = userLis, totalWsCount = totalWsCount, totalUserCount = totalUserCount, totalVehCount = totalVehCount, moduleLis = moduleLis };
+                obj = new { rows = userLis, totalWsCount = totalWsCount, totalUserCount = totalUserCount, totalVehCount = totalVehCount, moduleLis = moduleLis };
 
-            //插入cache 缓存12小时
-            //CacheHelper.SetCache("mydata", obj, DateTime.Now.AddHours(12), TimeSpan.Zero);
-            //}
-            //else
-            //{
-            //    obj = (object)cache;
+                //插入cache 缓存12小时
+                double tt = 12 * 60 * 60;
+                CacheHelper.SetCache("mydata", obj, DateTime.Now.AddSeconds(tt), TimeSpan.Zero);
+            }
+            else
+            {
+                obj = (object)cache;
 
-            //}
+            }
 
             return Json(obj);
         }
