@@ -1,0 +1,199 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/Content/bootstrap-table.min.css" rel="stylesheet" />
+<link href="~/Content/bootstrap-datepicker3.css" rel="stylesheet" />
+<script type="text/javascript" src="~/Scripts/bootstrap-table.min.js"></script>
+<script type="text/javascript" src="~/Scripts/bootstrap-table-zh-CN.min.js"></script>
+<script type="text/javascript" src="~/Scripts/bootstrap-datepicker.min.js"></script>
+<script type="text/javascript" src="~/Scripts/locales/bootstrap-datepicker.zh-CN.min.js"></script>
+<style>
+    td, span, div { font-size: 12px; }
+    .bootstrap-table .table { table-layout: fixed; max-width: 2000px; }
+    .fixed-table-container, .bootstrap-table .table { border-radius: 0; table-layout: fixed; }
+        .bootstrap-table .table th { background-color: #0c125a; border-left: none; color: #fff; }
+        .bootstrap-table .table:not(.table-condensed), .bootstrap-table .table:not(.table-condensed) > tbody > tr > td, .bootstrap-table .table:not(.table-condensed) > tbody > tr > th, .bootstrap-table .table:not(.table-condensed) > tfoot > tr > td, .bootstrap-table .table:not(.table-condensed) > tfoot > tr > th, .bootstrap-table .table:not(.table-condensed) > thead > tr > td { padding: 5px; }
+        .bootstrap-table .table > thead > tr > th { vertical-align: middle; border-left: 1px solid #ddd; }
+    /*td { text-overflow: ellipsis; white-space: nowrap; overflow: hidden; }*/
+    .fixed-table-container tbody td .th-inner, .fixed-table-container thead th .th-inner { padding: 8px; line-height: 16px; vertical-align: top; overflow: hidden; text-overflow: ellipsis; white-space: inherit; text-align: center; }
+</style>
+<div class="container-fluid">
+    <div class="row" style="margin: 10px;">
+        <div class="col-xs-3"><h4><i>各系统初始化数据</i></h4></div>           
+    </div>
+    <div class="row" style="border: 0px solid #d7d7d7; margin: 10px; ">
+        <div class="col-xs-12">
+            <div class="btn-group" role="group" aria-label="...">
+                <button type="button" class="btn btn-default btn-primary" data-row="DMSRows">DMS</button>
+                <button type="button" class="btn btn-default" data-row="SFARows">SFA</button>
+                <button type="button" class="btn btn-default" data-row="VEHICLERows">车销</button>
+                <button type="button" class="btn btn-default" data-row="ELMSRows">ELMS</button>
+                <button type="button" class="btn btn-default" data-row="FINRows">财务</button>
+                <button type="button" class="btn btn-default" data-row="B2BRows">B2B</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" style="margin: 10px;">
+        <table class="table table-striped" id="table"></table>
+    </div>
+
+</div>
+
+
+<script>
+    var data = {
+        ELMSRows : [],
+        DMSRows: [],
+        SFARows : [],
+        VEHICLERows: [],
+        FINRows : [],
+        B2BRows: []
+    }
+    
+
+    $(function () {
+        $this = this;
+        var $table = $("#table");
+        var data = [];
+        var columns = [
+                {
+                    field: '序号',
+                    title: '序号',
+                    align: 'center',
+                    width: 40,
+                    valign: "middle",
+                    formatter: function (value, row, index) {
+                        return index + 1;
+                    },
+                }, {
+                    field: '系统',
+                    title: '系统',
+                    visible:false,
+                    align: 'left',
+                    width: 60,
+                    valign: "middle",
+                }, {
+                    field: '类型',
+                    title: '类型',
+                    align: 'left',
+                    width: 60,
+                    valign: "middle",
+                }, {
+                    field: '项目',
+                    title: '项目',
+                    align: 'left',
+                    width: 100,
+                    valign: "middle",
+                }, {
+                    field: '必填',
+                    title: '必填',
+                    width: 200,
+                    valign: "middle",
+                    halign: "center",
+                }, {
+                    field: '选填',
+                    title: '选填',
+                    halign: "center",
+                    valign: "middle",
+                    width: 200,                   
+                }, {
+                    field: '维护状态',
+                    title: '维护状态',
+                    visible:false,
+                    align: 'center',                   
+                    width: 70,
+                    valign: "middle",
+                    halign: "center",
+                },
+                {
+                    field: '说明',
+                    title: '说明',
+                    valign: "middle",
+                    halign: "center",
+                    width: 200,
+                }
+        ];
+
+        $(".btn").click(function () {
+            $(".btn").removeClass("btn-primary");
+            $(this).addClass("btn-primary");
+            var dataTable = $(this).data("row");
+            $table.bootstrapTable('refreshOptions', {
+                data: JSON.parse(JSON.stringify(data[dataTable])),
+                //height: $(window).height() - $table.offset().top - 15,
+                //columns: columns,
+            });
+        })
+
+        //获取值
+        $this.TableDataInit = function () {
+            $.ajax({
+                type: 'POST',
+                url: 'FindInitData',
+                beforeSend: function (XMLHttpRequest) {
+                    $(".loading-icon").show();
+                },
+                success: function (result) {
+                    var CommonRows = result.CommonRows;
+                    data.ELMSRows = CommonRows.concat(result.ELMSRows);
+                    data.DMSRows = CommonRows.concat(result.DMSRows);
+                    data.SFARows = CommonRows.concat(result.SFARows);
+                    data.VEHICLERows = CommonRows.concat(result.VEHICLERows);
+                    data.FINRows = CommonRows.concat(result.FINRows);
+                    data.B2BRows = CommonRows.concat(result.B2BRows);
+
+                    $this.tableInit(data.DMSRows);
+                    //if ($table == null) {
+                    //    $this.tableInit();
+                    //} else {
+                    //    $table.bootstrapTable('refreshOptions', {
+                    //        data: data.DMSRows,
+                    //        height: $(window).height() - $table.offset().top - 15,
+                    //        columns: columns,
+                    //    });
+                    //}
+
+                    $(".loading-icon").hide();
+                },
+                complete: function (XMLHttpRequest, textStatus) {
+                    $(".loading-icon").hide();
+                },
+                error: function (error) {
+                    //alert(error.responseText);
+                }
+            });
+           
+        }
+
+        $this.tableInit = function (data) {
+            $table.bootstrapTable({
+                data: data,
+                singleSelect: true,
+                height: $(window).height() - $table.offset().top - 15,
+                columns: columns,
+                onClickRow: function (row, $element) {
+                    if ($table.bootstrapTable('getOptions').singleSelect == true) {
+                        $('.success').removeClass('success');//去除之前选中的行的，选中样式
+                        $($element).addClass('success');//添加当前选中的 success样式用于区别
+                    }
+                },
+            });
+
+            $(window).resize(function () {
+                $table.bootstrapTable('resetView', { height: $(window).height() - $(".table").offset().top - 15 });//随窗口变化改变高度
+            })
+        }
+
+
+        $this.TableDataInit();
+        
+
+    });
+
+
+
+</script>
