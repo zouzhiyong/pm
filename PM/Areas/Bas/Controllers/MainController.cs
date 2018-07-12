@@ -105,7 +105,9 @@ namespace PM.Areas.Bas.Controllers
                             d.xszjCount,
                             d.cxywyCount,
                             d.sjCount,
-                            d.qtCount                            
+                            d.qtCount,
+                            max(h.orderUserCount) as orderUserCount,
+							max(g.visitUserCount) as visitUserCount               
                             from 
 							(select t1.WSID,t1.WSName,t1.WSType,t1.IsValid,t3.AreaName+'/'+t2.AreaName as AreaName from Bas_WS t1
 							left join Bas_Area t2
@@ -149,9 +151,20 @@ namespace PM.Areas.Bas.Controllers
 							on a.WSID=e.WSID
                             left join (select WSID,max(RecTimestamp) as RecTimestamp from view_TMS_Car_Cost group by WSID) f
                             on a.WSID=f.WSID
-                            left join (select WSID,max(VisitDate) as VisitDate from SFA_Visit group by WSID) g
+                            left join (
+                                select 
+							    WSID,
+							    count(distinct case when RecTimeStamp >=  DATEADD(dd,-30, DATEADD(DD, DATEDIFF(DD, 0, GETDATE()), 0)) then UserID end) as visitUserCount,
+							    max(VisitDate) as VisitDate from SFA_Visit group by WSID
+                            ) g
                             on a.WSID=g.WSID
-                            left join (select WSID,max(RecTimeStamp) as RecTimeStamp from SFA_Order_Header group by WSID) h
+                            left join (
+                                select 
+								WSID,
+								count(distinct case when (SaleSourceID=4 or SaleSourceID=5) and RecTimeStamp >=  DATEADD(dd,-30, DATEADD(DD, DATEDIFF(DD, 0, GETDATE()), 0)) then RecUserID end) as orderUserCount,
+								max(RecTimeStamp) as RecTimeStamp 
+								from SFA_Order_Header group by WSID
+                            ) h
 							on a.WSID=h.WSID
                             where a.WSType=1 and isnull(a.IsValid,1)=1 
                             {0}
