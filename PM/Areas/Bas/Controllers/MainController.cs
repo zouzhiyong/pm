@@ -91,6 +91,12 @@ namespace PM.Areas.Bas.Controllers
                             datediff(day,max(f.RecTimestamp),GETDATE()) as noInputFyDayNums,
                             datediff(day,max(g.VisitDate),GETDATE()) as noBfDayNums,
                             datediff(day,max(h.RecTimeStamp),GETDATE()) as noOrderDayNums,
+                            max(c.oneWebDay) as oneWebDay,
+							max(c.oneWebWeek) as oneWebWeek,
+							max(c.oneWebMonth) as oneWebMonth,
+							max(c.oneAppDay) as oneAppDay,
+							max(c.oneAppWeek) as oneAppWeek,
+							max(c.oneAppMonth) as oneAppMonth,
                             d.userCount,
                             isnull(e.vehCount,0) as vehCount,
                             d.xsdbCount,
@@ -115,7 +121,13 @@ namespace PM.Areas.Bas.Controllers
                                     userid,
 									min(logintime) as onlineDate,
                                     max(case when workstation='Mobile APP' then logintime end) as noLoginAppDay, 
-                                    max(case when workstation='DMS WEB' then logintime end) as noLoginWebDay									
+                                    max(case when workstation='DMS WEB' then logintime end) as noLoginWebDay,
+                                    count(DISTINCT case when workstation='DMS WEB' and logintime >=  DATEADD(dd,-1, DATEADD(DD, DATEDIFF(DD, 0, GETDATE()), 0)) then Convert(VARCHAR(30),logintime,112) end ) AS oneWebDay,
+									count(DISTINCT case when workstation='DMS WEB' and logintime >=  DATEADD(dd,-7, DATEADD(DD, DATEDIFF(DD, 0, GETDATE()), 0)) then Convert(VARCHAR(30),logintime,112) end ) AS oneWebWeek,
+									count(DISTINCT case when workstation='DMS WEB' and logintime >=  DATEADD(dd,-30, DATEADD(DD, DATEDIFF(DD, 0, GETDATE()), 0)) then Convert(VARCHAR(30),logintime,112) end ) AS oneWebMonth,
+									count(DISTINCT case when workstation='Mobile APP' and logintime >=  DATEADD(dd,-1, DATEADD(DD, DATEDIFF(DD, 0, GETDATE()), 0)) then Convert(VARCHAR(30),logintime,112) end ) AS oneAppDay,
+									count(DISTINCT case when workstation='Mobile APP' and logintime >=  DATEADD(dd,-7, DATEADD(DD, DATEDIFF(DD, 0, GETDATE()), 0)) then Convert(VARCHAR(30),logintime,112) end ) AS oneAppWeek,
+									count(DISTINCT case when workstation='Mobile APP' and logintime >=  DATEADD(dd,-30, DATEADD(DD, DATEDIFF(DD, 0, GETDATE()), 0)) then Convert(VARCHAR(30),logintime,112) end ) AS oneAppMonth						
                                 from SYS_USERLOG group by userid
                             ) c
                             on b.UserID=c.userid

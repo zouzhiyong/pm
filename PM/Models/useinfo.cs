@@ -30,6 +30,12 @@ namespace PM.Models
         public int? noInputFyDayNums { get; set; }
         public int? noBfDayNums { get; set; }
         public int? noOrderDayNums { get; set; }
+        public int? oneWebDay { get; set; }
+        public int? oneWebWeek { get; set; }
+        public int? oneWebMonth { get; set; }
+        public int? oneAppDay { get; set; }
+        public int? oneAppWeek { get; set; }
+        public int? oneAppMonth { get; set; }
     }
     public class moduleInfo
     {
