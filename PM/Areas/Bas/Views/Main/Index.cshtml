@@ -11,6 +11,10 @@
 <style>
     td, span, div { font-size: 12px; }
     .bootstrap-table .table { table-layout: fixed; max-width: 2000px; }
+    .fixed-table-toolbar .bs-bars, .fixed-table-toolbar .columns, .fixed-table-toolbar .search{margin:0;line-height:28px;}
+    .fixed-table-toolbar{margin-bottom:5px;}
+    .bootstrap-table .search {margin:0 ;margin-left: 12px; }
+        .bootstrap-table .search input { height: 30px; font-size: 12px;width:220px; }
     .fixed-table-container, .bootstrap-table .table { border-radius: 0; table-layout: fixed; }
         .bootstrap-table .table th { background-color: #0c125a; border-left: none; color: #fff; }
         .bootstrap-table .table:not(.table-condensed), .bootstrap-table .table:not(.table-condensed) > tbody > tr > td, .bootstrap-table .table:not(.table-condensed) > tbody > tr > th, .bootstrap-table .table:not(.table-condensed) > tfoot > tr > td, .bootstrap-table .table:not(.table-condensed) > tfoot > tr > th, .bootstrap-table .table:not(.table-condensed) > thead > tr > td { padding: 5px; }
@@ -67,7 +71,10 @@
         </div>
     </div>
 
-    <div class="row" style="margin: 10px;">
+    <div class="row" style="margin: 10px 10px 0 10px;">
+        <div id="toolbar">
+            <button type="button" class="btn btn-primary btn-sm btn-clear">清空</button>
+        </div>
         <table class="table table-striped" id="table"></table>
     </div>
 
@@ -110,6 +117,7 @@
                 }, {
                     field: 'WSName',
                     title: '经销商名称',
+                    searchable: true,
                     align: 'left',
                     colspan: 1,
                     rowspan: 2,
@@ -214,7 +222,7 @@
                              if (value == null) {
                                  return "-";
                              } else {
-                                 return "<div title='最近WEB端登录时间为：" + new Date(eval('new ' + row.noLoginWebDay.substr(1, row.noLoginWebDay.length - 2))).Format("yyyy-MM-dd") + "'>" + value + "</div>";
+                                 return "<div title='最近WEB端登录时间为：" + (row.noLoginWebDay == null ? "" : new Date(eval('new ' + row.noLoginWebDay.substr(1, row.noLoginWebDay.length - 2))).Format("yyyy-MM-dd")) + "'>" + value + "</div>";
                              }
                          },
                          cellStyle: function (value, row, field) {
@@ -233,7 +241,7 @@
                             if (value == null) {
                                 return "-";
                             } else {
-                                return "<div title='最近WEB端登录时间为：" + new Date(eval('new ' + row.noLoginWebDay.substr(1, row.noLoginWebDay.length - 2))).Format("yyyy-MM-dd") + "'>" + value + "</div>";
+                                return "<div title='最近WEB端登录时间为：" + (row.noLoginWebDay == null ? "" : new Date(eval('new ' + row.noLoginWebDay.substr(1, row.noLoginWebDay.length - 2))).Format("yyyy-MM-dd")) + "'>" + value + "</div>";
                             }
                         },
                         cellStyle: function (value, row, field) {
@@ -252,7 +260,7 @@
                             if (value == null) {
                                 return "-";
                             } else {
-                                return "<div title='最近WEB端登录时间为：" + new Date(eval('new ' + row.noLoginWebDay.substr(1, row.noLoginWebDay.length - 2))).Format("yyyy-MM-dd") + "'>" + value + "</div>";
+                                return "<div title='最近WEB端登录时间为：" + (row.noLoginWebDay == null ? "" : new Date(eval('new ' + row.noLoginWebDay.substr(1, row.noLoginWebDay.length - 2))).Format("yyyy-MM-dd")) + "'>" + value + "</div>";
                             }
                         },
                         cellStyle: function (value, row, field) {
@@ -328,7 +336,7 @@
                             if (value == null) {
                                 return "-";
                             } else {
-                                return "<div title='最近登录时间为：" + new Date(eval('new ' + row.noLoginWebDay.substr(1, row.noLoginWebDay.length - 2))).Format("yyyy-MM-dd") + "'>" + value + "</div>";
+                                return "<div title='最近登录时间为：" + (row.noLoginWebDay == null ? "" : new Date(eval('new ' + row.noLoginWebDay.substr(1, row.noLoginWebDay.length - 2))).Format("yyyy-MM-dd")) + "'>" + value + "</div>";
                             }
                         },
                         cellStyle: function (value, row, field) {
@@ -349,7 +357,7 @@
                             if (value == null) {
                                 return "-";
                             } else {
-                                return "<div title='最近下单时间为：" + new Date(eval('new ' + row.OrderDate.substr(1, row.OrderDate.length - 2))).Format("yyyy-MM-dd") + "'>" + value + "</div>";
+                                return "<div title='最近下单时间为：" + (row.OrderDate == null ? "" : new Date(eval('new ' + row.OrderDate.substr(1, row.OrderDate.length - 2))).Format("yyyy-MM-dd")) + "'>" + value + "</div>";
                             }
                         },
                         cellStyle: function (value, row, field) {
@@ -370,7 +378,7 @@
                             if (value == null) {
                                 return "-";
                             } else {
-                                return "<div title='最近登录时间为：" + new Date(eval('new ' + row.noLoginAppDay.substr(1, row.noLoginAppDay.length - 2))).Format("yyyy-MM-dd") + "'>" + value + "</div>";
+                                return "<div title='最近登录时间为：" + (row.noLoginAppDay == null ? "" : new Date(eval('new ' + row.noLoginAppDay.substr(1, row.noLoginAppDay.length - 2))).Format("yyyy-MM-dd")) + "'>" + value + "</div>";
                             }
                         },
                         cellStyle: function (value, row, field) {
@@ -392,7 +400,7 @@
                             if (value == null) {
                                 return "-";
                             } else {
-                                return "<div title='最近录入时间为：" + new Date(eval('new ' + row.RecTimestamp.substr(1, row.RecTimestamp.length - 2))).Format("yyyy-MM-dd") + "'>" + value + "</div>";
+                                return "<div title='最近录入时间为：" + (row.RecTimestamp == null ? "" : new Date(eval('new ' + row.RecTimestamp.substr(1, row.RecTimestamp.length - 2))).Format("yyyy-MM-dd")) + "'>" + value + "</div>";
                             }
                         },
                         cellStyle: function (value, row, field) {
@@ -414,7 +422,7 @@
                             if (value == null) {
                                 return "-";
                             } else {
-                                return "<div title='最近拜访时间为：" + new Date(eval('new ' + row.VisitDate.substr(1, row.VisitDate.length - 2))).Format("yyyy-MM-dd") + "'>" + value + "</div>";
+                                return "<div title='最近拜访时间为：" + (row.VisitDate == null ? "" : new Date(eval('new ' + row.VisitDate.substr(1, row.VisitDate.length - 2))).Format("yyyy-MM-dd")) + "'>" + value + "</div>";
                             }
                         },
                         cellStyle: function (value, row, field) {
@@ -539,6 +547,11 @@
 
             $(".btn-search").click(function () {
                 $this.TableDataInit();
+            })
+
+            //清空
+            $(".btn-clear").click(function () {
+                $table.bootstrapTable('resetSearch');
             })
 
             $(".btn-cache").click(function () {
@@ -683,7 +696,6 @@
             $.ajax({
                 type: 'POST',
                 url: 'FindSqlList',
-
                 data: { where: "1000095,1000225,1000142,1000147,1000247,1000175,1000220,1000216" },
                 beforeSend: function (XMLHttpRequest) {
                     $(".loading-icon").show();
@@ -751,8 +763,11 @@
             $table = $('#table');
             $table.bootstrapTable({
                 data: data,
+                toolbar: "#toolbar",
+                searchAlign: "left",
+                search: true,
                 singleSelect: true,
-                height: $(window).height() - $table.offset().top - 15,
+                height: $(window).height() - $table.offset().top + 28,
                 columns: columns,
                 onClickRow: function (row, $element) {
                     if ($table.bootstrapTable('getOptions').singleSelect == true) {
@@ -763,7 +778,7 @@
             });
 
             $(window).resize(function () {
-                $table.bootstrapTable('resetView', { height: $(window).height() - $(".table").offset().top - 15 });//随窗口变化改变高度
+                $table.bootstrapTable('resetView', { height: $(window).height() - $(".table").offset().top + 53 });//随窗口变化改变高度
             })
         }
 
