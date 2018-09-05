@@ -97,6 +97,8 @@ namespace PM.Areas.Bas.Controllers
 							max(c.oneAppDay) as oneAppDay,
 							max(c.oneAppWeek) as oneAppWeek,
 							max(c.oneAppMonth) as oneAppMonth,
+                            isnull(i.custCount,0) as custCount,
+                            isnull(j.newCustCount,0) as newCustCount,
                             d.userCount,
                             isnull(e.vehCount,0) as vehCount,
                             d.xsdbCount,
@@ -144,7 +146,7 @@ namespace PM.Areas.Bas.Controllers
                                 count(case when UserType='0006' then UserID end) as sjCount,
 								count(case when UserType='0007' then UserID end) as cxywyCount,
 								count(case when isnull(UserType,'')<>'0001' and isnull(UserType,'')<>'0002' and isnull(UserType,'')<>'0003' and isnull(UserType,'')<>'0004' and isnull(UserType,'')<>'0006' and isnull(UserType,'')<>'0007' then UserID end) as qtCount  
-								from sys_user where isnull(IsValid,1)=1  and left(UserName,5)<>'admin' group by wsid
+								from sys_user where isnull(IsValid,1)=1 and left(UserName,5)<>'admin' group by wsid
 							) d
 							on a.wsid=d.wsid
                             left join (select WSID,count(VehID) as vehCount from Bas_Vehicle where isnull(IsValid,1)=1 and isnull(GpsID,'')<>'' group by WSID) e
@@ -166,9 +168,13 @@ namespace PM.Areas.Bas.Controllers
 								from SFA_Order_Header group by WSID
                             ) h
 							on a.WSID=h.WSID
-                            where a.WSType=1 and isnull(a.IsValid,1)=1 
+                            left join (select WSID,count(CustomerID) as custCount from Bas_Customer group by WSID) i
+							on i.WSID=a.WSID 
+                            left join (select WSID,count(CustomerID) as newCustCount from Bas_NewCustomer where AuditStatus=0 group by WSID) j
+							on j.WSID=a.WSID 
+                            where a.WSType=1 and isnull(a.IsValid,1)=1 and d.userCount is not null 
                             {0}
-                            group by a.AreaName,a.WSID,a.WSName,e.vehCount,d.userCount,d.xsdbCount,d.xszgCount,d.xsjlCount,d.xszjCount,d.cxywyCount,d.sjCount,d.qtCount
+                            group by a.AreaName,a.WSID,a.WSName,e.vehCount,d.userCount,d.xsdbCount,d.xszgCount,d.xsjlCount,d.xszjCount,d.cxywyCount,d.sjCount,d.qtCount,i.custCount,j.newCustCount
                             order by noLoginWebDay,noLoginAppDay");
 
                 string str = String.Format(strSql.ToString(), whereStr.ToString());

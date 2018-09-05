@@ -94,6 +94,7 @@
                     field: 'id',
                     title: '序号',
                     align: 'center',
+                    searchable: false,
                     width: 50,
                     colspan: 1,
                     rowspan: 2,
@@ -124,8 +125,27 @@
                     width: 200,
                     valign: "middle",
                 }, {
+                    field: 'custCount',
+                    title: '客户数',
+                    searchable: false,
+                    align: 'right',
+                    colspan: 1,
+                    rowspan: 2,
+                    width: 70,
+                    valign: "middle",
+                }, {
+                    field: 'newCustCount',
+                    title: '未审核客户数',
+                    searchable: false,
+                    align: 'right',
+                    colspan: 1,
+                    rowspan: 2,
+                    width: 60,
+                    valign: "middle",
+                }, {
                     field: 'onlineDate',
                     title: '上线日期',
+                    searchable: false,
                     colspan: 1,
                     rowspan: 2,
                     width: 90,
@@ -147,6 +167,7 @@
                 }, {
                     field: 'userCount',
                     title: '用户数',
+                    searchable: false,
                     halign: "center",
                     align: 'right',
                     valign: "middle",
@@ -163,6 +184,7 @@
                 }, {
                     field: 'vehCount',
                     title: 'GPS<br>车辆数',
+                    searchable: false,
                     align: 'right',
                     colspan: 1,
                     rowspan: 2,
@@ -180,6 +202,7 @@
                     field: 'dayWebCount',
                     title: 'WEB近一（月周天）登录次数',
                     align: 'right',
+                    searchable: false,
                     halign: "center",
                     width: 180,
                     colspan: 3,
@@ -189,6 +212,7 @@
                     field: 'dayAppCount',
                     title: 'APP近一（月周天）登录次数',
                     align: 'right',
+                    searchable: false,
                     halign: "center",
                     width: 180,
                     colspan: 3,
@@ -197,6 +221,7 @@
                 {
                     field: 'nousedays',
                     title: '最近连续天数',
+                    searchable: false,
                     align: 'right',
                     halign: "center",
                     width: 300,
@@ -206,6 +231,7 @@
                 {
                     field: 'usenumbers',
                     title: '各类型人数',
+                    searchable: false,
                     align: 'right',
                     halign: "center",
                     width: 290,
@@ -217,6 +243,7 @@
                      {
                          field: 'oneWebMonth',
                          title: '月登录次数',
+                         searchable: false,
                          align: 'right',
                          formatter: function (value, row, index) {
                              if (value == null) {
@@ -236,6 +263,7 @@
                     {
                         field: 'oneWebWeek',
                         title: '周登录次数',
+                        searchable: false,
                         align: 'right',
                         formatter: function (value, row, index) {
                             if (value == null) {
@@ -255,6 +283,7 @@
                     {
                         field: 'oneWebDay',
                         title: '天登录次数',
+                        searchable: false,
                         align: 'right',
                         formatter: function (value, row, index) {
                             if (value == null) {
@@ -274,6 +303,7 @@
                     {
                         field: 'oneAppMonth',
                         title: '月登录次数',
+                        searchable: false,
                         align: 'right',
                         formatter: function (value, row, index) {
                             if (value == null) {
@@ -293,6 +323,7 @@
                     {
                         field: 'oneAppWeek',
                         title: '周登录次数',
+                        searchable: false,
                         align: 'right',
                         formatter: function (value, row, index) {
                             if (value == null) {
@@ -312,6 +343,7 @@
                     {
                         field: 'oneAppDay',
                         title: '天登录次数',
+                        searchable: false,
                         align: 'right',
                         formatter: function (value, row, index) {
                             if (value == null) {
@@ -331,6 +363,7 @@
                     {
                         field: 'noLoginWebDayNums',
                         title: '<i class="fa fa-television fa-lg"></i><br>未登录',
+                        searchable: false,
                         align: 'right',
                         formatter: function (value, row, index) {
                             if (value == null) {
@@ -352,6 +385,7 @@
                     }, {
                         field: 'noOrderDayNums',
                         title: '<i class="fa fa-file-text fa-lg"></i><br>未下单',
+                        searchable: false,
                         align: 'right',
                         formatter: function (value, row, index) {
                             if (value == null) {
@@ -373,6 +407,7 @@
                     }, {
                         field: 'noLoginAppDayNums',
                         title: '<i class="fa fa-tablet fa-lg"></i><br>未登录',
+                        searchable: false,
                         align: 'right',
                         formatter: function (value, row, index) {
                             if (value == null) {
@@ -395,6 +430,7 @@
                     }, {
                         field: 'noInputFyDayNums',
                         title: '<i class="fa fa fa-edit fa-lg"></i><br>未录费用',
+                        searchable: false,
                         align: 'right',
                         formatter: function (value, row, index) {
                             if (value == null) {
@@ -417,6 +453,7 @@
                     }, {
                         field: 'noBfDayNums',
                         title: '<i class="fa fa-user-times fa-lg"></i><br>未拜访',
+                        searchable: false,
                         align: 'right',
                         formatter: function (value, row, index) {
                             if (value == null) {
@@ -439,6 +476,7 @@
                     }, {
                         field: 'xsdbCount',
                         title: '销售代表',
+                        searchable: false,
                         halign: "center",
                         align: 'right',
                         valign: "middle",
@@ -451,6 +489,7 @@
                         },
                     }, {
                         field: 'xszgCount',
+                        searchable: false,
                         title: '销售主管',
                         halign: "center",
                         align: 'right',
@@ -464,6 +503,7 @@
                         },
                     }, {
                         field: 'xsjlCount',
+                        searchable: false,
                         title: '销售经理',
                         halign: "center",
                         align: 'right',
@@ -477,6 +517,7 @@
                         },
                     }, {
                         field: 'xszjCount',
+                        searchable: false,
                         title: '销售总监',
                         halign: "center",
                         align: 'right',
@@ -490,6 +531,7 @@
                         },
                     }, {
                         field: 'cxywyCount',
+                        searchable: false,
                         title: '车销代表',
                         halign: "center",
                         align: 'right',
@@ -505,6 +547,7 @@
                         field: 'sjCount',
                         title: '司机',
                         halign: "center",
+                        searchable: false,
                         align: 'right',
                         valign: "middle",
                         formatter: function (value, row, index) {
@@ -517,6 +560,7 @@
                     }, {
                         field: 'qtCount',
                         title: '其它人员',
+                        searchable: false,
                         halign: "center",
                         align: 'right',
                         valign: "middle",
@@ -696,7 +740,7 @@
             $.ajax({
                 type: 'POST',
                 url: 'FindSqlList',
-                data: { where: "1000095,1000225,1000142,1000147,1000247,1000175,1000220,1000216" },
+                data: { where: "1000223,1000095,1000225,1000142,1000147,1000247,1000175,1000220,1000216" },
                 beforeSend: function (XMLHttpRequest) {
                     $(".loading-icon").show();
                 },

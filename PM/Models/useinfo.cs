@@ -18,6 +18,8 @@ namespace PM.Models
         public DateTime? OrderDate { get; set; }
         public int? noLoginWebDayNums { get; set; }
         public int? noLoginAppDayNums { get; set; }
+        public int custCount { get; set; }
+        public int newCustCount { get; set; }
         public int userCount { get; set; }
         public int vehCount { get; set; }
         public int xsdbCount { get; set; }
