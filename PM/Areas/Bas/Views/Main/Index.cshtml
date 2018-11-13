@@ -27,7 +27,7 @@
         <div class="col-xs-3"><h4><i>经销商使用情况</i></h4></div>
         <div class="col-xs-5">
             <div class="form-inline form-group">
-                <span for="days">未登录天数:</span>
+                <span for="days">月登录天数:</span>
                 <div class="form-group">
                     <span class="input-daterange input-group" style="width:100px;">
                         <input type="text" class="input-sm form-control" id="days" />
@@ -183,7 +183,7 @@
                     }
                 }, {
                     field: 'vehCount',
-                    title: 'GPS<br>车辆数',
+                    title: 'GPS车辆数',
                     searchable: false,
                     align: 'right',
                     colspan: 1,
@@ -200,7 +200,7 @@
                 },
                 {
                     field: 'dayWebCount',
-                    title: 'WEB近一（月周天）登录次数',
+                    title: 'WEB近一（月周天）登录天数',
                     align: 'right',
                     searchable: false,
                     halign: "center",
@@ -210,7 +210,7 @@
                 },
                 {
                     field: 'dayAppCount',
-                    title: 'APP近一（月周天）登录次数',
+                    title: 'APP近一（月周天）登录天数',
                     align: 'right',
                     searchable: false,
                     halign: "center",
@@ -242,7 +242,7 @@
                 [
                      {
                          field: 'oneWebMonth',
-                         title: '月登录次数',
+                         title: '月登录天数',
                          searchable: false,
                          align: 'right',
                          formatter: function (value, row, index) {
@@ -256,13 +256,16 @@
                              if (value == null) {
                                  return { css: { "background-color": "#9b9898" } };
                              } else {
-                                 return "";
+                                 if (Number(value) > Number($("#days").val())) {
+                                     return { css: { "background-color": "#910606", "color": "#fff" } };
+                                 }
                              }
+                             return "";
                          }
                      },
                     {
                         field: 'oneWebWeek',
-                        title: '周登录次数',
+                        title: '周登录天数',
                         searchable: false,
                         align: 'right',
                         formatter: function (value, row, index) {
@@ -276,13 +279,16 @@
                             if (value == null) {
                                 return { css: { "background-color": "#9b9898" } };
                             } else {
-                                return "";
+                                if (Number(value) > Number($("#days").val())) {
+                                    return { css: { "background-color": "#910606", "color": "#fff" } };
+                                }
                             }
+                            return "";
                         }
                     },
                     {
                         field: 'oneWebDay',
-                        title: '天登录次数',
+                        title: '天登录天数',
                         searchable: false,
                         align: 'right',
                         formatter: function (value, row, index) {
@@ -296,13 +302,16 @@
                             if (value == null) {
                                 return { css: { "background-color": "#9b9898" } };
                             } else {
-                                return "";
+                                if (Number(value) > Number($("#days").val())) {
+                                    return { css: { "background-color": "#910606", "color": "#fff" } };
+                                }
                             }
+                            return "";
                         }
                     },
                     {
                         field: 'oneAppMonth',
-                        title: '月登录次数',
+                        title: '月登录天数',
                         searchable: false,
                         align: 'right',
                         formatter: function (value, row, index) {
@@ -316,13 +325,16 @@
                             if (value == null) {
                                 return { css: { "background-color": "#9b9898" } };
                             } else {
-                                return "";
+                                if (Number(value) > Number($("#days").val())) {
+                                    return { css: { "background-color": "#910606", "color": "#fff" } };
+                                }
                             }
+                            return "";
                         }
                     },
                     {
                         field: 'oneAppWeek',
-                        title: '周登录次数',
+                        title: '周登录天数',
                         searchable: false,
                         align: 'right',
                         formatter: function (value, row, index) {
@@ -336,13 +348,16 @@
                             if (value == null) {
                                 return { css: { "background-color": "#9b9898" } };
                             } else {
-                                return "";
+                                if (Number(value) > Number($("#days").val())) {
+                                    return { css: { "background-color": "#910606", "color": "#fff" } };
+                                }
                             }
+                            return "";
                         }
                     },
                     {
                         field: 'oneAppDay',
-                        title: '天登录次数',
+                        title: '天登录天数',
                         searchable: false,
                         align: 'right',
                         formatter: function (value, row, index) {
@@ -362,7 +377,7 @@
                     },
                     {
                         field: 'noLoginWebDayNums',
-                        title: '<i class="fa fa-television fa-lg"></i><br>未登录',
+                        title: 'WEB端未登录',
                         searchable: false,
                         align: 'right',
                         formatter: function (value, row, index) {
@@ -371,20 +386,10 @@
                             } else {
                                 return "<div title='最近登录时间为：" + (row.noLoginWebDay == null ? "" : new Date(eval('new ' + row.noLoginWebDay.substr(1, row.noLoginWebDay.length - 2))).Format("yyyy-MM-dd")) + "'>" + value + "</div>";
                             }
-                        },
-                        cellStyle: function (value, row, field) {
-                            if (value == null) {
-                                return { css: { "background-color": "#9b9898" } };
-                            } else {
-                                if (Number(value) > Number($("#days").val())) {
-                                    return { css: { "background-color": "#910606", "color": "#fff" } };
-                                }
-                            }
-                            return "";
                         }
                     }, {
                         field: 'noOrderDayNums',
-                        title: '<i class="fa fa-file-text fa-lg"></i><br>未下单',
+                        title: '未下单',
                         searchable: false,
                         align: 'right',
                         formatter: function (value, row, index) {
@@ -393,20 +398,10 @@
                             } else {
                                 return "<div title='最近下单时间为：" + (row.OrderDate == null ? "" : new Date(eval('new ' + row.OrderDate.substr(1, row.OrderDate.length - 2))).Format("yyyy-MM-dd")) + "'>" + value + "</div>";
                             }
-                        },
-                        cellStyle: function (value, row, field) {
-                            if (value == null) {
-                                return { css: { "background-color": "#9b9898" } };
-                            } else {
-                                if (Number(value) > Number($("#days").val())) {
-                                    return { css: { "background-color": "#910606", "color": "#fff" } };
-                                }
-                            }
-                            return "";
                         }
                     }, {
                         field: 'noLoginAppDayNums',
-                        title: '<i class="fa fa-tablet fa-lg"></i><br>未登录',
+                        title: 'APP端未登录',
                         searchable: false,
                         align: 'right',
                         formatter: function (value, row, index) {
@@ -429,7 +424,7 @@
                         }
                     }, {
                         field: 'noInputFyDayNums',
-                        title: '<i class="fa fa fa-edit fa-lg"></i><br>未录费用',
+                        title: '未录费用',
                         searchable: false,
                         align: 'right',
                         formatter: function (value, row, index) {
@@ -452,7 +447,7 @@
                         }
                     }, {
                         field: 'noBfDayNums',
-                        title: '<i class="fa fa-user-times fa-lg"></i><br>未拜访',
+                        title: '未拜访',
                         searchable: false,
                         align: 'right',
                         formatter: function (value, row, index) {
@@ -587,7 +582,7 @@
                 return y + "-" + m + "-" + d;
             }
 
-            $("#days").val(1);
+            $("#days").val(20);
 
             $(".btn-search").click(function () {
                 $this.TableDataInit();

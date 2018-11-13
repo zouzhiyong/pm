@@ -126,12 +126,12 @@ namespace PM.Areas.Bas.Controllers
 									min(logintime) as onlineDate,
                                     max(case when workstation='Mobile APP' then logintime end) as noLoginAppDay, 
                                     max(case when workstation='DMS WEB' then logintime end) as noLoginWebDay,
-                                    count(DISTINCT case when workstation='DMS WEB' and logintime >=  DATEADD(dd,-1, DATEADD(DD, DATEDIFF(DD, 0, GETDATE()), 0)) then Convert(VARCHAR(30),logintime,112) end ) AS oneWebDay,
-									count(DISTINCT case when workstation='DMS WEB' and logintime >=  DATEADD(dd,-7, DATEADD(DD, DATEDIFF(DD, 0, GETDATE()), 0)) then Convert(VARCHAR(30),logintime,112) end ) AS oneWebWeek,
-									count(DISTINCT case when workstation='DMS WEB' and logintime >=  DATEADD(dd,-30, DATEADD(DD, DATEDIFF(DD, 0, GETDATE()), 0)) then Convert(VARCHAR(30),logintime,112) end ) AS oneWebMonth,
-									count(DISTINCT case when workstation='Mobile APP' and logintime >=  DATEADD(dd,-1, DATEADD(DD, DATEDIFF(DD, 0, GETDATE()), 0)) then Convert(VARCHAR(30),logintime,112) end ) AS oneAppDay,
-									count(DISTINCT case when workstation='Mobile APP' and logintime >=  DATEADD(dd,-7, DATEADD(DD, DATEDIFF(DD, 0, GETDATE()), 0)) then Convert(VARCHAR(30),logintime,112) end ) AS oneAppWeek,
-									count(DISTINCT case when workstation='Mobile APP' and logintime >=  DATEADD(dd,-30, DATEADD(DD, DATEDIFF(DD, 0, GETDATE()), 0)) then Convert(VARCHAR(30),logintime,112) end ) AS oneAppMonth						
+                                    count(DISTINCT case when workstation='DMS WEB' and logintime >=  DATEADD(dd,0, DATEADD(DD, DATEDIFF(DD, 0, GETDATE()), 0)) then Convert(VARCHAR(30),logintime,112) end ) AS oneWebDay,
+									count(DISTINCT case when workstation='DMS WEB' and logintime >=  DATEADD(dd,-6, DATEADD(DD, DATEDIFF(DD, 0, GETDATE()), 0)) then Convert(VARCHAR(30),logintime,112) end ) AS oneWebWeek,
+									count(DISTINCT case when workstation='DMS WEB' and logintime >=  DATEADD(dd,-29, DATEADD(DD, DATEDIFF(DD, 0, GETDATE()), 0)) then Convert(VARCHAR(30),logintime,112) end ) AS oneWebMonth,
+									count(DISTINCT case when workstation='Mobile APP' and logintime >=  DATEADD(dd,0, DATEADD(DD, DATEDIFF(DD, 0, GETDATE()), 0)) then Convert(VARCHAR(30),logintime,112) end ) AS oneAppDay,
+									count(DISTINCT case when workstation='Mobile APP' and logintime >=  DATEADD(dd,-6, DATEADD(DD, DATEDIFF(DD, 0, GETDATE()), 0)) then Convert(VARCHAR(30),logintime,112) end ) AS oneAppWeek,
+									count(DISTINCT case when workstation='Mobile APP' and logintime >=  DATEADD(dd,-29, DATEADD(DD, DATEDIFF(DD, 0, GETDATE()), 0)) then Convert(VARCHAR(30),logintime,112) end ) AS oneAppMonth						
                                 from SYS_USERLOG group by userid
                             ) c
                             on b.UserID=c.userid
@@ -175,7 +175,7 @@ namespace PM.Areas.Bas.Controllers
                             where a.WSType=1 and isnull(a.IsValid,1)=1 and d.userCount is not null 
                             {0}
                             group by a.AreaName,a.WSID,a.WSName,e.vehCount,d.userCount,d.xsdbCount,d.xszgCount,d.xsjlCount,d.xszjCount,d.cxywyCount,d.sjCount,d.qtCount,i.custCount,j.newCustCount
-                            order by noLoginWebDay,noLoginAppDay");
+                            order by oneWebMonth desc");
 
                 string str = String.Format(strSql.ToString(), whereStr.ToString());
 
