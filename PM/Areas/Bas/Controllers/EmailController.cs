@@ -16,21 +16,23 @@ namespace PM.Areas.Bas.Controllers
         // GET: Bas/Email
         public ActionResult Index()
         {
-            try
+            if (DateTime.Now.Hour == 17)
             {
-                string toMails = ConfigurationManager.AppSettings["toMails"].ToString();
-                string smtpEmail = ConfigurationManager.AppSettings["smtpEmail"].ToString();
-                string fromEmail = ConfigurationManager.AppSettings["fromEmail"].ToString();
-                string fromEmailPassword = ConfigurationManager.AppSettings["fromEmailPassword"].ToString();
-                EmailParameterSet model = new EmailParameterSet();
-                model.SendEmail = fromEmail;
-                model.SendPwd = fromEmailPassword;//密码
-                model.SendSetSmtp = smtpEmail;//发送的SMTP服务地址 ，每个邮箱的是不一样的。。根据发件人的邮箱来定
-                model.ConsigneeAddress = toMails;
-                model.ConsigneeTheme = "EPM-U+经销商使用情况";
-                model.ConsigneeHand = "实施部门";
-                model.ConsigneeName = "邹智勇";
-                string str = @"<style>table{border-collapse:collapse;font-family:'Microsoft YaHei UI';font-size:12px;}table,th,td{border:1px solid #eee;}th{text-align:center;} thead{background-color:#350a4d;color:#fff;}</style>
+                try
+                {
+                    string toMails = ConfigurationManager.AppSettings["toMails"].ToString();
+                    string smtpEmail = ConfigurationManager.AppSettings["smtpEmail"].ToString();
+                    string fromEmail = ConfigurationManager.AppSettings["fromEmail"].ToString();
+                    string fromEmailPassword = ConfigurationManager.AppSettings["fromEmailPassword"].ToString();
+                    EmailParameterSet model = new EmailParameterSet();
+                    model.SendEmail = fromEmail;
+                    model.SendPwd = fromEmailPassword;//密码
+                    model.SendSetSmtp = smtpEmail;//发送的SMTP服务地址 ，每个邮箱的是不一样的。。根据发件人的邮箱来定
+                    model.ConsigneeAddress = toMails;
+                    model.ConsigneeTheme = "EPM-U+经销商使用情况";
+                    model.ConsigneeHand = "实施部门";
+                    model.ConsigneeName = "邹智勇";
+                    string str = @"<style>table{border-collapse:collapse;font-family:'Microsoft YaHei UI';font-size:12px;}table,th,td{border:1px solid #eee;}th{text-align:center;} thead{background-color:#350a4d;color:#fff;}</style>
                                 <div style='font-family:'Microsoft YaHei UI';font-size:12px;'>当天订单数量如下：</div>
                                  <table>
                                       <thead>
@@ -44,14 +46,14 @@ namespace PM.Areas.Bas.Controllers
                                                 <th style='width:100px;'>销售退货单数量</th>
                                             </tr>
                                         </thead>";
-                StringBuilder sqlQuery = new StringBuilder();
-                sqlQuery.Append(str);
+                    StringBuilder sqlQuery = new StringBuilder();
+                    sqlQuery.Append(str);
 
-                string where = ConfigurationManager.AppSettings["ws"].ToString();
-                StringBuilder whereStr = new StringBuilder();
-                whereStr.Append(where);
-                StringBuilder strSql = new StringBuilder();
-                strSql.Append(@"
+                    string where = ConfigurationManager.AppSettings["ws"].ToString();
+                    StringBuilder whereStr = new StringBuilder();
+                    whereStr.Append(where);
+                    StringBuilder strSql = new StringBuilder();
+                    strSql.Append(@"
                             SELECT 
                             WSCode as code,
                             WSName as name,
@@ -62,13 +64,13 @@ namespace PM.Areas.Bas.Controllers
                             FROM Bas_WS a
                             where a.wsid in ({0})
                            ");
-                str = String.Format(strSql.ToString(), whereStr.ToString());
-                StuInfoDBContext stuContext = new StuInfoDBContext();
-                var wsinfo = stuContext.Database.SqlQuery<wsinfo>(str).ToList();
-                sqlQuery.Append("<tbody>");
-                for (int i = 0; i < wsinfo.Count; i++)
-                {
-                    string _str = @"<tr>
+                    str = String.Format(strSql.ToString(), whereStr.ToString());
+                    StuInfoDBContext stuContext = new StuInfoDBContext();
+                    var wsinfo = stuContext.Database.SqlQuery<wsinfo>(str).ToList();
+                    sqlQuery.Append("<tbody>");
+                    for (int i = 0; i < wsinfo.Count; i++)
+                    {
+                        string _str = @"<tr>
                                     <td style='text-align:center;'>{0}</td>
                                     <td style='text-align:left;'>{1}</td>
                                     <td style='text-align:left;'>{2}</td>
@@ -77,23 +79,26 @@ namespace PM.Areas.Bas.Controllers
                                     <td style='text-align:center;background-color:#ff7901;color:#fff;'>{5}</td>
                                     <td style='text-align:center;'>{6}</td>
                                 </tr>";
-                    string temp = String.Format(_str.ToString(), i + 1, wsinfo[i].code, wsinfo[i].name, wsinfo[i].cgddsl, wsinfo[i].cgthsl, wsinfo[i].xsddsl, wsinfo[i].xsthsl);
-                    sqlQuery.Append(temp);
-                }
-                sqlQuery.Append("</tbody>");
-                sqlQuery.Append("</table>");
-                model.SendContent = sqlQuery.ToString();
+                        string temp = String.Format(_str.ToString(), i + 1, wsinfo[i].code, wsinfo[i].name, wsinfo[i].cgddsl, wsinfo[i].cgthsl, wsinfo[i].xsddsl, wsinfo[i].xsthsl);
+                        sqlQuery.Append(temp);
+                    }
+                    sqlQuery.Append("</tbody>");
+                    sqlQuery.Append("</table>");
+                    model.SendContent = sqlQuery.ToString();
 
-                MailSend(model, true);
-                ViewBag.Message = "发送成功!";
-                return View();
-            }
-            catch (Exception ex)
+                    MailSend(model, true);
+                    ViewBag.Message = "发送成功!";
+                    return View();
+                }
+                catch (Exception ex)
+                {
+                    ViewBag.Message = ex.Message;
+                    return View();
+                }
+            }else
             {
-                ViewBag.Message = ex.Message;
-                return View();
+                return null;
             }
-            
         }
 
         public bool MailSend(EmailParameterSet EPSModel, bool IsBodyHtml)
