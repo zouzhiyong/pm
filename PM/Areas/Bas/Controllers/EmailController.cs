@@ -32,7 +32,7 @@ namespace PM.Areas.Bas.Controllers
                     model.ConsigneeTheme = "EPM-U+经销商使用情况";
                     model.ConsigneeHand = "实施部门";
                     model.ConsigneeName = "邹智勇";
-                    string str = @"<style>table{border-collapse:collapse;font-family:'Microsoft YaHei UI';font-size:12px;}table,th,td{border:1px solid #eee;}th{text-align:center;}th,td{padding:6px;} thead{background-color:#350a4d;color:#fff;}</style>
+                    string str = @"<style>table{border-collapse:collapse;font-family:'Microsoft YaHei UI';font-size:12px;}table,th,td{border:1px solid #eee;}th{text-align:center;}th,td{padding:3px;} thead{background-color:#350a4d;color:#fff;}</style>
                                 <div style='font-family:'Microsoft YaHei UI';font-size:12px;'>当天订单数量如下(每天上午10点和17点定时发送)：</div>
                                  <table>
                                       <thead>
@@ -76,11 +76,11 @@ namespace PM.Areas.Bas.Controllers
                                     <td style='text-align:center;'>{0}</td>
                                     <td style='text-align:left;'>{1}</td>
                                     <td style='text-align:left;'>{2}</td>
-                                    <td style='text-align:right;'>{3}</td>
-                                    <td style='text-align:right;'>{4}</td>
-                                    <td style='text-align:right;'>{5}</td>
-                                    <td style='text-align:right;background-color:#ff7901;color:#fff;'>{6}</td>
-                                    <td style='text-align:right;'>{7}</td>
+                                    <td style='text-align:center;'>{3}</td>
+                                    <td style='text-align:center;'>{4}</td>
+                                    <td style='text-align:center;'>{5}</td>
+                                    <td style='text-align:center;background-color:#ff7901;color:#fff;'>{6}</td>
+                                    <td style='text-align:center;'>{7}</td>
                                 </tr>";
                         string temp = String.Format(_str.ToString(), i + 1, wsinfo[i].code, wsinfo[i].name, wsinfo[i].custsl, wsinfo[i].cgddsl, wsinfo[i].cgthsl, wsinfo[i].xsddsl, wsinfo[i].xsthsl);
                         sqlQuery.Append(temp);
