@@ -32,7 +32,7 @@ namespace PM.Areas.Bas.Controllers
                     model.ConsigneeTheme = "EPM-U+经销商使用情况";
                     model.ConsigneeHand = "实施部门";
                     model.ConsigneeName = "邹智勇";
-                    string str = @"<style>table{border-collapse:collapse;font-family:'Microsoft YaHei UI';font-size:12px;}table,th,td{border:1px solid #eee;}th{text-align:center;} thead{background-color:#350a4d;color:#fff;}</style>
+                    string str = @"<style>table{border-collapse:collapse;font-family:'Microsoft YaHei UI';font-size:12px;}table,th,td{border:1px solid #eee;}th{text-align:center;}th,td{padding:6px;} thead{background-color:#350a4d;color:#fff;}</style>
                                 <div style='font-family:'Microsoft YaHei UI';font-size:12px;'>当天订单数量如下(每天上午10点和17点定时发送)：</div>
                                  <table>
                                       <thead>
