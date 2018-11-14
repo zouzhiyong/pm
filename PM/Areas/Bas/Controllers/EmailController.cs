@@ -16,7 +16,21 @@ namespace PM.Areas.Bas.Controllers
         // GET: Bas/Email
         public ActionResult Index()
         {
-            if (DateTime.Now.Hour == 17 || DateTime.Now.Hour == 10)
+            var str = GetEmailData(false);
+            ViewBag.Message = str;
+            return View();
+        }
+
+        public ActionResult Data()
+        {
+            var str = GetEmailData(true);
+            ViewBag.Message = str;
+            return null;
+        }
+
+        private string GetEmailData(bool IsSend)
+        {
+            if (DateTime.Now.Hour == 17)
             {
                 try
                 {
@@ -32,8 +46,8 @@ namespace PM.Areas.Bas.Controllers
                     model.ConsigneeTheme = "EPM-U+经销商使用情况";
                     model.ConsigneeHand = "实施部门";
                     model.ConsigneeName = "邹智勇";
-                    string str = @"<style>table{border-collapse:collapse;font-family:'Microsoft YaHei UI';font-size:12px;}table,th,td{border:1px solid #eee;}th{text-align:center;}th,td{padding:3px;} thead{background-color:#350a4d;color:#fff;}</style>
-                                <div style='font-family:'Microsoft YaHei UI';font-size:12px;'>当天订单数量如下(每天上午10点和17点定时发送)：</div>
+                    string str = @"<style>table{border-collapse:collapse;font-family:'Microsoft Yahei';font-size:12px;}table,th,td{border:1px solid #eee;}th{text-align:center;}th,td{padding:3px;} thead{background-color:#350a4d;color:#fff;}</style>
+                                <div style=""font-family:'Microsoft Yahei';font-size:12px;text-align:left;"">当天订单数量如下：</div>
                                  <table>
                                       <thead>
                                             <tr>
@@ -73,32 +87,36 @@ namespace PM.Areas.Bas.Controllers
                     for (int i = 0; i < wsinfo.Count; i++)
                     {
                         string _str = @"<tr>
-                                    <td style='text-align:center;'>{0}</td>
-                                    <td style='text-align:left;'>{1}</td>
-                                    <td style='text-align:left;'>{2}</td>
-                                    <td style='text-align:center;'>{3}</td>
-                                    <td style='text-align:center;'>{4}</td>
-                                    <td style='text-align:center;'>{5}</td>
-                                    <td style='text-align:center;background-color:#ff7901;color:#fff;'>{6}</td>
-                                    <td style='text-align:center;'>{7}</td>
-                                </tr>";
+                                            <td style='text-align:center;'>{0}</td>
+                                            <td style='text-align:left;'>{1}</td>
+                                            <td style='text-align:left;'>{2}</td>
+                                            <td style='text-align:center;'>{3}</td>
+                                            <td style='text-align:center;'>{4}</td>
+                                            <td style='text-align:center;'>{5}</td>
+                                            <td style='text-align:center;background-color:#ff7901;color:#fff;'>{6}</td>
+                                            <td style='text-align:center;'>{7}</td>
+                                        </tr>";
                         string temp = String.Format(_str.ToString(), i + 1, wsinfo[i].code, wsinfo[i].name, wsinfo[i].custsl, wsinfo[i].cgddsl, wsinfo[i].cgthsl, wsinfo[i].xsddsl, wsinfo[i].xsthsl);
                         sqlQuery.Append(temp);
                     }
                     sqlQuery.Append("</tbody>");
                     sqlQuery.Append("</table>");
-                    model.SendContent = sqlQuery.ToString();
 
-                    MailSend(model, true);
-                    ViewBag.Message = "发送成功!";
-                    return View();
+                    //是否发送
+                    if (IsSend == true)
+                    {
+                        model.SendContent = sqlQuery.ToString();
+                        MailSend(model, true);
+                    }
+
+                    return sqlQuery.ToString();
                 }
                 catch (Exception ex)
-                {
-                    ViewBag.Message = ex.Message;
-                    return View();
+                {                    
+                    return ex.Message;
                 }
-            }else
+            }
+            else
             {
                 return null;
             }
