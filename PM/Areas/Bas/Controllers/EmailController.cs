@@ -40,6 +40,7 @@ namespace PM.Areas.Bas.Controllers
                                                 <th style='width:60px;'>序号</th>
                                                 <th style='width:120px;'>经销商编码</th>
                                                 <th style='width:250px;'>经销商名称</th>
+                                                <th style='width:80px;'>客户数量</th>
                                                 <th style='width:80px;'>采购订单数量</th>
                                                 <th style='width:100px;'>采购退货单数量</th>
                                                 <th style='width:80px;'>销售订单数量</th>
@@ -57,6 +58,7 @@ namespace PM.Areas.Bas.Controllers
                             SELECT 
                             WSCode as code,
                             WSName as name,
+                            (select count(0) from Bas_Customer where a.WSID=WSID and isnull(isvalid,1)=1) as custsl,
                             (select count(0) from DMS_pur_bill where a.WSID=WSID and PurType='41' and DateDiff(dd,purdate,getdate())=0 and status>1) as cgddsl,
                             (select count(0) from DMS_pur_bill where a.WSID=WSID and PurType='43' and DateDiff(dd,purdate,getdate())=0 and status>1) as cgddsl,
                             (select count(0) from SFA_Order_Header where a.WSID=WSID and OrderType='51' and DateDiff(dd,OrderDate,getdate())=0 and status>1) as xsddsl,
@@ -74,12 +76,13 @@ namespace PM.Areas.Bas.Controllers
                                     <td style='text-align:center;'>{0}</td>
                                     <td style='text-align:left;'>{1}</td>
                                     <td style='text-align:left;'>{2}</td>
-                                    <td style='text-align:center;'>{3}</td>
-                                    <td style='text-align:center;'>{4}</td>
-                                    <td style='text-align:center;background-color:#ff7901;color:#fff;'>{5}</td>
-                                    <td style='text-align:center;'>{6}</td>
+                                    <td style='text-align:right;'>{3}</td>
+                                    <td style='text-align:right;'>{4}</td>
+                                    <td style='text-align:right;'>{5}</td>
+                                    <td style='text-align:right;background-color:#ff7901;color:#fff;'>{6}</td>
+                                    <td style='text-align:right;'>{7}</td>
                                 </tr>";
-                        string temp = String.Format(_str.ToString(), i + 1, wsinfo[i].code, wsinfo[i].name, wsinfo[i].cgddsl, wsinfo[i].cgthsl, wsinfo[i].xsddsl, wsinfo[i].xsthsl);
+                        string temp = String.Format(_str.ToString(), i + 1, wsinfo[i].code, wsinfo[i].name, wsinfo[i].custsl, wsinfo[i].cgddsl, wsinfo[i].cgthsl, wsinfo[i].xsddsl, wsinfo[i].xsthsl);
                         sqlQuery.Append(temp);
                     }
                     sqlQuery.Append("</tbody>");
@@ -193,6 +196,7 @@ namespace PM.Areas.Bas.Controllers
         public string id { get; set; }
         public string code { get; set; }
         public string name { get; set; }
+        public int custsl { get; set; }
         public int cgddsl { get; set; }
         public int cgthsl { get; set; }
         public int xsddsl { get; set; }
