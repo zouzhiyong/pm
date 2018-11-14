@@ -38,7 +38,7 @@ namespace PM.Areas.Bas.Controllers
                                       <thead>
                                             <tr>
                                                 <th style='width:60px;'>序号</th>
-                                                <th style='width:120px;'>经销商编码</th>
+                                                <th style='width:120px;'>经销商ID</th>
                                                 <th style='width:250px;'>经销商名称</th>
                                                 <th style='width:80px;'>客户数量</th>
                                                 <th style='width:80px;'>采购订单数量</th>
@@ -56,7 +56,7 @@ namespace PM.Areas.Bas.Controllers
                     StringBuilder strSql = new StringBuilder();
                     strSql.Append(@"
                             SELECT 
-                            WSCode as code,
+                            wsid as code,
                             WSName as name,
                             (select count(0) from Bas_Customer where a.WSID=WSID and isnull(isvalid,1)=1) as custsl,
                             (select count(0) from DMS_pur_bill where a.WSID=WSID and PurType='41' and DateDiff(dd,purdate,getdate())=0 and status>1) as cgddsl,
