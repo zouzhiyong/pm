@@ -30,7 +30,7 @@ namespace PM.Areas.Bas.Controllers
 
         private string GetEmailData(bool IsSend)
         {
-            if (DateTime.Now.Hour == 17)
+            if (DateTime.Now.Hour == 17 || IsSend==false)
             {
                 try
                 {
