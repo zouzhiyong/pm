@@ -60,7 +60,7 @@ namespace PM.Areas.Bas.Controllers
                                                 <th style='width:80px;'>采购订单数量</th>
                                                 <th style='width:100px;'>采购退货单数量</th>
                                                 <th style='width:80px;'>销售订单<br>(未发货)</th>
-                                                <th style='width:96px;'>销售订单数量<br>(部分或全部发货)</th>
+                                                <th style='width:105px;'>销售订单数量<br>(部分或全部发货)</th>
                                                 <th style='width:100px;'>销售退货单数量</th>
                                             </tr>
                                         </thead>";
