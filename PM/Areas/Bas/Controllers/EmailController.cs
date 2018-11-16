@@ -30,7 +30,9 @@ namespace PM.Areas.Bas.Controllers
 
         private string GetEmailData(bool IsSend)
         {
-            if (DateTime.Now.Hour == 17 || IsSend==false)
+            var hour = Convert.ToInt16(Request.QueryString["hour"] == null ? "0" : Request.QueryString["hour"].ToString());
+            
+            if ((DateTime.Now.Hour == hour && DateTime.Now.Hour != 0) || IsSend==false)
             {
                 try
                 {
@@ -57,7 +59,8 @@ namespace PM.Areas.Bas.Controllers
                                                 <th style='width:80px;'>客户数量</th>
                                                 <th style='width:80px;'>采购订单数量</th>
                                                 <th style='width:100px;'>采购退货单数量</th>
-                                                <th style='width:80px;'>销售订单数量</th>
+                                                <th style='width:80px;'>销售订单总数</th>
+                                                <th style='width:85px;'>销售订单数量(有发货)</th>
                                                 <th style='width:100px;'>销售退货单数量</th>
                                             </tr>
                                         </thead>";
@@ -75,8 +78,9 @@ namespace PM.Areas.Bas.Controllers
                             (select count(0) from Bas_Customer where a.WSID=WSID and isnull(isvalid,1)=1) as custsl,
                             (select count(0) from DMS_pur_bill where a.WSID=WSID and PurType='41' and DateDiff(dd,purdate,getdate())=0 and status>1) as cgddsl,
                             (select count(0) from DMS_pur_bill where a.WSID=WSID and PurType='43' and DateDiff(dd,purdate,getdate())=0 and status>1) as cgddsl,
-                            (select count(0) from SFA_Order_Header where a.WSID=WSID and OrderType='51' and DateDiff(dd,OrderDate,getdate())=0 and status>1) as xsddsl,
-                            (select count(0) from SFA_Order_Header where a.WSID=WSID and OrderType='53' and DateDiff(dd,OrderDate,getdate())=0 and status>1) as xsthsl
+                            (select count(0) from SFA_Order_Header where a.WSID=WSID and OrderType='51' and DateDiff(dd,OrderDate,getdate())=0 and status>0) as xsddzs,
+							(select count(0) from SFA_Order_Header where a.WSID=WSID and OrderType='51' and DateDiff(dd,OrderDate,getdate())=0 and (status=3 or status=4)) as xsddsl,
+                            (select count(0) from SFA_Order_Header where a.WSID=WSID and OrderType='53' and DateDiff(dd,OrderDate,getdate())=0 and (status=3 or status=4)) as xsthsl
                             FROM Bas_WS a
                             where a.wsid in ({0})
                            ");
@@ -93,10 +97,11 @@ namespace PM.Areas.Bas.Controllers
                                             <td style='text-align:center;'>{3}</td>
                                             <td style='text-align:center;'>{4}</td>
                                             <td style='text-align:center;'>{5}</td>
-                                            <td style='text-align:center;background-color:#ff7901;color:#fff;'>{6}</td>
-                                            <td style='text-align:center;'>{7}</td>
+                                            <td style='text-align:center;background-color:#f6d5b8;'>{6}</td>
+                                            <td style='text-align:center;background-color:#ff7901;color:#fff;'>{7}</td>
+                                            <td style='text-align:center;'>{8}</td>
                                         </tr>";
-                        string temp = String.Format(_str.ToString(), i + 1, wsinfo[i].code, wsinfo[i].name, wsinfo[i].custsl, wsinfo[i].cgddsl, wsinfo[i].cgthsl, wsinfo[i].xsddsl, wsinfo[i].xsthsl);
+                        string temp = String.Format(_str.ToString(), i + 1, wsinfo[i].code, wsinfo[i].name, wsinfo[i].custsl, wsinfo[i].cgddsl, wsinfo[i].cgthsl, wsinfo[i].xsddzs, wsinfo[i].xsddsl, wsinfo[i].xsthsl);
                         sqlQuery.Append(temp);
                     }
                     sqlQuery.Append("</tbody>");
@@ -213,10 +218,11 @@ namespace PM.Areas.Bas.Controllers
     {
         public string id { get; set; }
         public string code { get; set; }
-        public string name { get; set; }
+        public string name { get; set; }        
         public int custsl { get; set; }
         public int cgddsl { get; set; }
         public int cgthsl { get; set; }
+        public int xsddzs { get; set; }
         public int xsddsl { get; set; }
         public int xsthsl { get; set; }
     }
