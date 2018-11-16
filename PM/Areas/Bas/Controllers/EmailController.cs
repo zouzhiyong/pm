@@ -59,8 +59,8 @@ namespace PM.Areas.Bas.Controllers
                                                 <th style='width:80px;'>客户数量</th>
                                                 <th style='width:80px;'>采购订单数量</th>
                                                 <th style='width:100px;'>采购退货单数量</th>
-                                                <th style='width:80px;'>销售订单总数</th>
-                                                <th style='width:85px;'>销售订单数量(有发货)</th>
+                                                <th style='width:80px;'>销售订单<br>(未发货)</th>
+                                                <th style='width:96px;'>销售订单数量<br>(部分或全部发货)</th>
                                                 <th style='width:100px;'>销售退货单数量</th>
                                             </tr>
                                         </thead>";
@@ -78,7 +78,7 @@ namespace PM.Areas.Bas.Controllers
                             (select count(0) from Bas_Customer where a.WSID=WSID and isnull(isvalid,1)=1) as custsl,
                             (select count(0) from DMS_pur_bill where a.WSID=WSID and PurType='41' and DateDiff(dd,purdate,getdate())=0 and status>1) as cgddsl,
                             (select count(0) from DMS_pur_bill where a.WSID=WSID and PurType='43' and DateDiff(dd,purdate,getdate())=0 and status>1) as cgddsl,
-                            (select count(0) from SFA_Order_Header where a.WSID=WSID and OrderType='51' and DateDiff(dd,OrderDate,getdate())=0 and status>0) as xsddzs,
+                            (select count(0) from SFA_Order_Header where a.WSID=WSID and OrderType='51' and DateDiff(dd,OrderDate,getdate())=0 and (status=1 or status=2)) as xsddwfh,
 							(select count(0) from SFA_Order_Header where a.WSID=WSID and OrderType='51' and DateDiff(dd,OrderDate,getdate())=0 and (status=3 or status=4)) as xsddsl,
                             (select count(0) from SFA_Order_Header where a.WSID=WSID and OrderType='53' and DateDiff(dd,OrderDate,getdate())=0 and (status=3 or status=4)) as xsthsl
                             FROM Bas_WS a
@@ -97,11 +97,19 @@ namespace PM.Areas.Bas.Controllers
                                             <td style='text-align:center;'>{3}</td>
                                             <td style='text-align:center;'>{4}</td>
                                             <td style='text-align:center;'>{5}</td>
-                                            <td style='text-align:center;background-color:#f6d5b8;'>{6}</td>
-                                            <td style='text-align:center;background-color:#ff7901;color:#fff;'>{7}</td>
+                                            <td style='text-align:center;background-color:#d9d9d8;'>{6}</td>
+                                            <td style='text-align:center;background-color:{9};color:#fff;'>{7}</td>
                                             <td style='text-align:center;'>{8}</td>
                                         </tr>";
-                        string temp = String.Format(_str.ToString(), i + 1, wsinfo[i].code, wsinfo[i].name, wsinfo[i].custsl, wsinfo[i].cgddsl, wsinfo[i].cgthsl, wsinfo[i].xsddzs, wsinfo[i].xsddsl, wsinfo[i].xsthsl);
+                        string custsl = wsinfo[i].custsl == 0 ? "" : wsinfo[i].custsl.ToString();
+                        string cgddsl = wsinfo[i].cgddsl == 0 ? "" : wsinfo[i].cgddsl.ToString();
+                        string cgthsl = wsinfo[i].cgthsl == 0 ? "" : wsinfo[i].cgthsl.ToString();
+                        string xsddwfh = wsinfo[i].xsddwfh == 0 ? "" : wsinfo[i].xsddwfh.ToString();
+                        string xsddsl = wsinfo[i].xsddsl == 0 ? "" : wsinfo[i].xsddsl.ToString();
+                        string xsthsl = wsinfo[i].xsthsl == 0 ? "" : wsinfo[i].xsthsl.ToString();
+                        string bgcolor= wsinfo[i].xsddsl == 0 ? "red" : "#1d6c09";
+
+                        string temp = String.Format(_str.ToString(), i + 1, wsinfo[i].code, wsinfo[i].name, custsl, cgddsl, cgthsl,xsddwfh, xsddsl, xsthsl, bgcolor);
                         sqlQuery.Append(temp);
                     }
                     sqlQuery.Append("</tbody>");
@@ -222,7 +230,7 @@ namespace PM.Areas.Bas.Controllers
         public int custsl { get; set; }
         public int cgddsl { get; set; }
         public int cgthsl { get; set; }
-        public int xsddzs { get; set; }
+        public int xsddwfh { get; set; }
         public int xsddsl { get; set; }
         public int xsthsl { get; set; }
     }
