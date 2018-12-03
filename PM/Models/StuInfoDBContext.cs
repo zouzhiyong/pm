@@ -11,6 +11,14 @@ namespace PM.Models
         public StuInfoDBContext()
             : base("DefaultConnection")
         {
+        }        
+    }
+
+    public class TestDBContext : DbContext
+    {
+        public TestDBContext()
+            : base("TestConnection")
+        {
         }
     }
 }
