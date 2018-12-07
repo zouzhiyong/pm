@@ -92,6 +92,24 @@
                         return index + 1;
                     },
                 }, {
+                    field: 'City',
+                    title: '城市',
+                    searchable: true,
+                    align: 'left',
+                    colspan: 1,
+                    rowspan: 2,
+                    width: 100,
+                    valign: "middle",
+                }, {
+                    field: 'FkfWsCode',
+                    title: '付款方经销商代码',
+                    searchable: true,
+                    align: 'left',
+                    colspan: 1,
+                    rowspan: 2,
+                    width: 100,
+                    valign: "middle",
+                }, {
                     field: 'WSID',
                     title: '经销商ID',
                     searchable: true,
@@ -108,7 +126,7 @@
                     colspan: 1,
                     rowspan: 2,
                     width: 250,
-                    valign: "middle",
+                    valign: "middle"
                 }, {
                     field: 'custCount',
                     title: '客户数量',
@@ -171,6 +189,18 @@
                             return (value == null ? "" : new Date(eval('new ' + value.substr(1, value.length - 2))).Format("yyyy-MM-dd"));
                         }
                     },
+                }, {
+                    field: 'WSName',
+                    title: '经销商名称',
+                    searchable: true,
+                    align: 'left',
+                    colspan: 1,
+                    rowspan: 2,
+                    width: 350,
+                    valign: "middle",
+                    formatter: function (value, row, index) {
+                        return "<div title='【" + row.WSCompany + "】" + value + "'>【" + row.WSCompany + "】" + value + "</div>";
+                    }
                 }, {
                     field: 'statusName',
                     title: '状态',

@@ -11,6 +11,8 @@ namespace PM.Models
     {
         [Key]
         public string WSID { get; set; }
+        public string City { get; set; }
+        public string FkfWsCode { get; set; }
         public string WSCompany { get; set; }
         public string WSName { get; set; }
         public string ContactName { get; set; }

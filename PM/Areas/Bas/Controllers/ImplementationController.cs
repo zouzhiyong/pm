@@ -21,7 +21,7 @@ namespace PM.Areas.Bas.Controllers
         {
             StuInfoDBContext stuContext = new StuInfoDBContext();
             TestDBContext testContext = new TestDBContext();
-            var wsList = testContext.T_WS.Where(t => t.IsValid != 0).OrderByDescending(o => o.goLiveDate).ToList();
+            var wsList = testContext.T_WS.Where(t => t.IsValid != 0).OrderByDescending(o => new {o.City,o.WSCompany,o.goLiveDate}).ToList();
             var implementItemList = testContext.T_ImplementPersonnel.Where(t => t.IsValid != 0).ToList();
             var statusItemList = testContext.T_Status.Where(t => 1 == 1).ToList();
             foreach (var item in wsList)
