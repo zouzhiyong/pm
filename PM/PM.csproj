@@ -234,6 +234,7 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Areas\Bas\Controllers\EmailController.cs" />
+    <Compile Include="Areas\Bas\Controllers\ImplementationController.cs" />
     <Compile Include="Areas\Bas\Controllers\InitDataController.cs" />
     <Compile Include="Areas\Bas\Controllers\MainController.cs" />
     <Compile Include="Areas\Bas\MainAreaRegistration.cs" />
@@ -249,6 +250,10 @@
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\StuInfoDBContext.cs" />
+    <Compile Include="Models\T_ImplementPersonnel.cs" />
+    <Compile Include="Models\T_Status.cs" />
+    <Compile Include="Models\T_WS_TABEL.cs" />
+    <Compile Include="Models\T_WS.cs" />
     <Compile Include="Models\useinfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
@@ -298,6 +303,7 @@
     <Content Include="Areas\Bas\Views\InitData\Index.cshtml" />
     <Content Include="ExcelFiles\初始化主数据清单.xlsx" />
     <Content Include="Areas\Bas\Views\Email\Index.cshtml" />
+    <Content Include="Areas\Bas\Views\Implementation\Index.cshtml" />
     <None Include="Properties\PublishProfiles\PM.pubxml" />
     <None Include="Scripts\jquery-2.2.4.intellisense.js" />
     <Content Include="Scripts\common.js" />

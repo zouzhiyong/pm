@@ -11,7 +11,7 @@ namespace PM.Models
         public StuInfoDBContext()
             : base("DefaultConnection")
         {
-        }        
+        }
     }
 
     public class TestDBContext : DbContext
@@ -20,5 +20,9 @@ namespace PM.Models
             : base("TestConnection")
         {
         }
-    }
+
+        public DbSet<T_WS> T_WS { get; set; }
+        public DbSet<T_ImplementPersonnel> T_ImplementPersonnel { get; set; }
+        public DbSet<T_Status> T_Status { get; set; }
+    }    
 }

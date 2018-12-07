@@ -1,0 +1,517 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/Content/bootstrap-table.min.css" rel="stylesheet" />
+<link href="~/Content/bootstrap-datepicker3.css" rel="stylesheet" />
+<script type="text/javascript" src="~/Scripts/bootstrap-table.min.js"></script>
+<script type="text/javascript" src="~/Scripts/bootstrap-table-zh-CN.min.js"></script>
+<script type="text/javascript" src="~/Scripts/bootstrap-datepicker.min.js"></script>
+<script type="text/javascript" src="~/Scripts/locales/bootstrap-datepicker.zh-CN.min.js"></script>
+<style>
+    .chart { border: 1px solid #d7d7d7; margin: 10px; padding: 5px; box-shadow: 2px 2px 5px rgba(188, 188, 188, 0.349019607843137); }
+    .chart-item { height: 130px; text-align: center; color: #cccccc; cursor: pointer; }
+        .chart-item.active { color: #009900; background-color: #dff0ff; }
+    .chart-item-border:after { width: 1px; height: 60px; background-color: #cccccc; content: " "; position: absolute; right: 1px; top: 30px; }
+    .chart-item-value { font-size: 55px; line-height: 80px; font-weight: bold; font-family: 'Times New Roman'; }
+    .chart-item-label { font-size: 12px; line-height: 30px; }
+    .chart-item-per { font-size: 12px; }
+
+    td, span, div { font-size: 12px; }
+    .bootstrap-table .table { table-layout: fixed; max-width: 2000px; }
+    .fixed-table-toolbar .bs-bars, .fixed-table-toolbar .columns, .fixed-table-toolbar .search { margin: 0; line-height: 28px; }
+    .fixed-table-toolbar { margin-bottom: 5px; }
+    .bootstrap-table .search { margin: 0; margin-left: 12px; }
+        .bootstrap-table .search input { height: 30px; font-size: 12px; width: 220px; }
+    .fixed-table-container, .bootstrap-table .table { border-radius: 0; table-layout: fixed; }
+        .bootstrap-table .table th { background-color: #0c125a; border-left: none; color: #fff; }
+        .bootstrap-table .table:not(.table-condensed), .bootstrap-table .table:not(.table-condensed) > tbody > tr > td, .bootstrap-table .table:not(.table-condensed) > tbody > tr > th, .bootstrap-table .table:not(.table-condensed) > tfoot > tr > td, .bootstrap-table .table:not(.table-condensed) > tfoot > tr > th, .bootstrap-table .table:not(.table-condensed) > thead > tr > td { padding: 5px; }
+        .bootstrap-table .table > thead > tr > th { vertical-align: middle; border-left: 1px solid #ddd; }
+    td { text-overflow: ellipsis; white-space: nowrap; overflow: hidden; }
+    .fixed-table-container tbody td .th-inner, .fixed-table-container thead th .th-inner { padding: 8px; line-height: 16px; vertical-align: top; overflow: hidden; text-overflow: ellipsis; white-space: inherit; text-align: center; }
+</style>
+<div class="container-fluid">
+    <div class="row" style="margin: 10px;">
+        <div class="col-xs-3"><h4>经销商推广情况</h4></div>
+    </div>
+    <div class="chart row">
+        <div class="col-xs-3">
+            <div class="chart-item chart-item-border active" data-type="sszStatus">
+                <div id="sszWsNumberValue" class="chart-item-value">0</div>
+                <div class="chart-item-label">正在实施中经销商数</div>
+                <div id="sszWsNumberLabel" class="chart-item-per active">0%</div>
+            </div>
+        </div>
+        <div class="col-xs-3">
+            <div class="chart-item chart-item-border" data-type="planStatus">
+                <div id="planWsNumberValue" class="chart-item-value">0</div>
+                <div class="chart-item-label">计划上线经销商数</div>
+            </div>
+        </div>
+        <div class="col-xs-3">
+            <div class="chart-item chart-item-border" data-type="ysxStatus">
+                <div id="ysxWsNumberValue" class="chart-item-value">0</div>
+                <div class="chart-item-label">已上线经销商数</div>
+                <div id="ysxWsNumberLabel" class="chart-item-per">0%</div>
+            </div>
+        </div>
+        <div class="col-xs-3">
+            <div class="chart-item" data-type="wsxStatus">
+                <div id="wsxWsNumberValue" class="chart-item-value">0</div>
+                <div class="chart-item-label">未上线经销商数</div>
+                <div id="wsxWsNumberLabel" class="chart-item-per">0%</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" style="margin: 10px 10px 0 10px;">
+        <div id="toolbar">
+            <button type="button" class="btn btn-primary btn-sm btn-clear">清空</button>
+        </div>
+        <table class="table table-striped" id="table"></table>
+    </div>
+
+</div>
+
+
+<script>
+    $(function () {
+        $this = this;
+        var rows = [];
+        var $table = null;
+        var columns = [
+                [{
+                    field: 'id',
+                    title: '序号',
+                    align: 'center',
+                    width: 50,
+                    colspan: 1,
+                    rowspan: 2,
+                    valign: "middle",
+                    formatter: function (value, row, index) {
+                        return index + 1;
+                    },
+                }, {
+                    field: 'WSID',
+                    title: '经销商ID',
+                    searchable: true,
+                    align: 'left',
+                    colspan: 1,
+                    rowspan: 2,
+                    width: 70,
+                    valign: "middle",
+                }, {
+                    field: 'WSName',
+                    title: '经销商名称',
+                    searchable: true,
+                    align: 'left',
+                    colspan: 1,
+                    rowspan: 2,
+                    width: 250,
+                    valign: "middle",
+                }, {
+                    field: 'custCount',
+                    title: '客户数量',
+                    align: 'right',
+                    colspan: 1,
+                    rowspan: 2,
+                    width: 70,
+                    valign: "middle",
+                }, {
+                    field: '',
+                    title: '调研日期',
+                    colspan: 2,
+                    rowspan: 1,
+                    width: 180,
+                    valign: "middle"
+                }, {
+                    field: '',
+                    title: '培训日期',
+                    colspan: 2,
+                    rowspan: 1,
+                    width: 180,
+                    valign: "middle"
+                }, {
+                    field: 'goLiveDate',
+                    title: '上线日期',
+                    searchable: false,
+                    align: 'right',
+                    colspan: 1,
+                    rowspan: 2,
+                    width: 90,
+                    valign: "middle",
+                    formatter: function (value, row, index) {
+                        if (value == null) {
+                            return "-";
+                        } else {
+                            return (value == null ? "" : new Date(eval('new ' + value.substr(1, value.length - 2))).Format("yyyy-MM-dd"));
+                        }
+                    },
+                }, {
+                    field: '',
+                    title: '远程支持日期',
+                    align: 'center',
+                    colspan: 2,
+                    rowspan: 1,
+                    width: 180,
+                    valign: "middle",
+                }, {
+                    field: 'handoverDate',
+                    title: '移交日期',
+                    searchable: false,
+                    align: 'right',
+                    colspan: 1,
+                    rowspan: 2,
+                    width: 90,
+                    valign: "middle",
+                    formatter: function (value, row, index) {
+                        if (value == null) {
+                            return "-";
+                        } else {
+                            return (value == null ? "" : new Date(eval('new ' + value.substr(1, value.length - 2))).Format("yyyy-MM-dd"));
+                        }
+                    },
+                }, {
+                    field: 'statusName',
+                    title: '状态',
+                    align: 'left',
+                    colspan: 1,
+                    rowspan: 2,
+                    width: 90,
+                    valign: "middle"
+                }, {
+                    field: '',
+                    title: '月份',
+                    colspan: 12,
+                    rowspan: 1,
+                    width: 650,
+                    valign: "middle"
+                }
+                ],
+                [
+                     {
+                         field: 'researchBeginDate',
+                         title: '开始日期',
+                         align: 'right',
+                         searchable: false,
+                         width: 90,
+                         valign: "middle",
+                         formatter: function (value, row, index) {
+                             if (value == null) {
+                                 return "-";
+                             } else {
+                                 return (value == null ? "" : new Date(eval('new ' + value.substr(1, value.length - 2))).Format("yyyy-MM-dd"));
+                             }
+                         },
+                     },
+                    {
+                        field: 'researchEndDate',
+                        title: '结束日期',
+                        searchable: false,
+                        align: 'right',
+                        width: 90,
+                        valign: "middle",
+                        formatter: function (value, row, index) {
+                            if (value == null) {
+                                return "-";
+                            } else {
+                                return (value == null ? "" : new Date(eval('new ' + value.substr(1, value.length - 2))).Format("yyyy-MM-dd"));
+                            }
+                        },
+                    },
+                    {
+                        field: 'trainBeginDate',
+                        title: '开始日期',
+                        searchable: false,
+                        align: 'right',
+                        width: 90,
+                        valign: "middle",
+                        formatter: function (value, row, index) {
+                            if (value == null) {
+                                return "-";
+                            } else {
+                                return (value == null ? "" : new Date(eval('new ' + value.substr(1, value.length - 2))).Format("yyyy-MM-dd"));
+                            }
+                        },
+                    },
+                    {
+                        field: 'trainEndDate',
+                        title: '结束日期',
+                        searchable: false,
+                        align: 'right',
+                        width: 90,
+                        valign: "middle",
+                        formatter: function (value, row, index) {
+                            if (value == null) {
+                                return "-";
+                            } else {
+                                return (value == null ? "" : new Date(eval('new ' + value.substr(1, value.length - 2))).Format("yyyy-MM-dd"));
+                            }
+                        },
+                    }, {
+                        field: 'localeBeginDate',
+                        title: '开始日期',
+                        searchable: false,
+                        align: 'right',
+                        width: 90,
+                        valign: "middle",
+                        formatter: function (value, row, index) {
+                            if (value == null) {
+                                return "-";
+                            } else {
+                                return (value == null ? "" : new Date(eval('new ' + value.substr(1, value.length - 2))).Format("yyyy-MM-dd"));
+                            }
+                        },
+                    },
+                    {
+                        field: 'localeEndDate',
+                        title: '结束日期',
+                        searchable: false,
+                        align: 'right',
+                        width: 90,
+                        valign: "middle",
+                        formatter: function (value, row, index) {
+                            if (value == null) {
+                                return "-";
+                            } else {
+                                return (value == null ? "" : new Date(eval('new ' + value.substr(1, value.length - 2))).Format("yyyy-MM-dd"));
+                            }
+                        },
+                    },
+                    {
+                        field: 'xsCount1Name',
+                        title: '1',
+                        align: 'center',
+                        valign: "middle",
+                        cellStyle: function (value, row, field) {
+                            return $this.cellStyle(value, row, field);
+                        }
+                    },
+                    {
+                        field: 'xsCount2Name',
+                        title: '2',
+                        align: 'center',
+                        valign: "middle",
+                        cellStyle: function (value, row, field) {
+                            return $this.cellStyle(value, row, field);
+                        }
+                    },
+                    {
+                        field: 'xsCount3Name',
+                        title: '3',
+                        align: 'center',
+                        valign: "middle",
+                        cellStyle: function (value, row, field) {
+                            return $this.cellStyle(value, row, field);
+                        }
+                    },
+                    {
+                        field: 'xsCount4Name',
+                        title: '4',
+                        align: 'center',
+                        valign: "middle",
+                        cellStyle: function (value, row, field) {
+                            return $this.cellStyle(value, row, field);
+                        }
+                    },
+                    {
+                        field: 'xsCount5Name',
+                        title: '5',
+                        align: 'center',
+                        valign: "middle",
+                        cellStyle: function (value, row, field) {
+                            return $this.cellStyle(value, row, field);
+                        }
+                    },
+                    {
+                        field: 'xsCount6Name',
+                        title: '6',
+                        align: 'center',
+                        valign: "middle",
+                        cellStyle: function (value, row, field) {
+                            return $this.cellStyle(value, row, field);
+                        }
+                    },
+                    {
+                        field: 'xsCount7Name',
+                        title: '7',
+                        align: 'center',
+                        valign: "middle",
+                        cellStyle: function (value, row, field) {
+                            return $this.cellStyle(value, row, field);
+                        }
+                    },
+                    {
+                        field: 'xsCount8Name',
+                        title: '8',
+                        align: 'center',
+                        valign: "middle",
+                        cellStyle: function (value, row, field) {
+                            return $this.cellStyle(value, row, field);
+                        }
+                    },
+                    {
+                        field: 'xsCount9Name',
+                        title: '9',
+                        align: 'center',
+                        valign: "middle",
+                        cellStyle: function (value, row, field) {
+                            return $this.cellStyle(value, row, field);
+                        }
+                    },
+                    {
+                        field: 'xsCount10Name',
+                        title: '10',
+                        align: 'center',
+                        valign: "middle",
+                        cellStyle: function (value, row, field) {
+                            return $this.cellStyle(value, row, field);
+                        }
+                    },
+                    {
+                        field: 'xsCount11Name',
+                        title: '11',
+                        align: 'center',
+                        valign: "middle",
+                        cellStyle: function (value, row, field) {
+                            return $this.cellStyle(value, row, field);
+                        }
+                    },
+                    {
+                        field: 'xsCount12Name',
+                        title: '12',
+                        align: 'center',
+                        valign: "middle",
+                        cellStyle: function (value, row, field) {
+                            return $this.cellStyle(value, row, field);
+                        }
+                    },
+                ]
+
+        ];
+
+        //清空
+        $(".btn-clear").click(function () {
+            $table.bootstrapTable('resetSearch');
+        })
+
+        $(".chart-item").click(function () {
+            $(".chart-item").removeClass("active");
+            $(this).addClass("active");
+
+            var typeName = $(this).data("type");
+
+            var data = JSON.parse(JSON.stringify(rows)).filter(function (item) {
+                return item[typeName] == 1;
+            })
+            $table.bootstrapTable('refreshOptions', {
+                data: data,
+                columns: columns,
+            });
+        })
+
+        //获取值
+        $this.TableDataInit = function () {
+            $.ajax({
+                type: 'POST',
+                url: 'findWsInfo',
+                beforeSend: function (XMLHttpRequest) {
+                    $(".loading-icon").show();
+                },
+                success: function (result) {
+
+                    $("#sszWsNumberValue").text(result.sszWsNumber);
+                    $("#planWsNumberValue").text(result.planWsNumber);
+                    $("#ysxWsNumberValue").text(result.ysxWsNumber);
+                    $("#wsxWsNumberValue").text(result.wsxWsNumber);
+                    
+                    $("#sszWsNumberLabel").text((parseFloat(result.sszWsNumber) / parseFloat(result.planWsNumber)).toFixed(2) + " %");
+                    $("#ysxWsNumberLabel").text((parseFloat(result.ysxWsNumber) / parseFloat(result.planWsNumber)).toFixed(2) + " %");
+                    $("#wsxWsNumberLabel").text((parseFloat(result.wsxWsNumber) / parseFloat(result.planWsNumber)).toFixed(2) + " %");
+
+                    //result.rows.map(function (item) {
+                    //    item.xsCount1 = item.xsCount1 == 0 ? "-" : item.xsCount1;
+                    //    item.xsCount2 = item.xsCount2 == 0 ? "-" : item.xsCount2;
+                    //    item.xsCount3 = item.xsCount3 == 0 ? "-" : item.xsCount3;
+                    //    item.xsCount4 = item.xsCount4 == 0 ? "-" : item.xsCount4;
+                    //    item.xsCount5 = item.xsCount5 == 0 ? "-" : item.xsCount5;
+                    //    item.xsCount6 = item.xsCount6 == 0 ? "-" : item.xsCount6;
+                    //    item.xsCount7 = item.xsCount7 == 0 ? "-" : item.xsCount7;
+                    //    item.xsCount8 = item.xsCount8 == 0 ? "-" : item.xsCount8;
+                    //    item.xsCount9 = item.xsCount9 == 0 ? "-" : item.xsCount9;
+                    //    item.xsCount10 = item.xsCount10 == 0 ? "-" : item.xsCount10;
+                    //    item.xsCount11 = item.xsCount11 == 0 ? "-" : item.xsCount11;
+                    //    item.xsCount12 = item.xsCount12 == 0 ? "-" : item.xsCount12;
+                    //})
+
+                    rows = result.rows;
+
+                    var data = JSON.parse(JSON.stringify(rows)).filter(function (item) {
+                        return item.sszStatus == 1;
+                    })
+
+                    $this.tableInit(data);
+
+                    $(".loading-icon").hide();
+                },
+                complete: function (XMLHttpRequest, textStatus) {
+                    $(".loading-icon").hide();
+                },
+                error: function (error) {
+                    //alert(error.responseText);
+                }
+            });
+
+        }
+        $this.tableInit = function (data) {
+            $table = $('#table');
+            $table.bootstrapTable({
+                data: data,
+                toolbar: "#toolbar",
+                searchAlign: "left",
+                search: true,
+                singleSelect: true,
+                height: $(window).height() - $table.offset().top + 28,
+                columns: columns,
+                rowStyle: function (row, index) {
+                    if (row.sszStatus == 1) {
+                        return { css: { "background-color": "#ffb11b" } }
+                    }
+                    return {};
+                },
+                onClickRow: function (row, $element) {
+                    if ($table.bootstrapTable('getOptions').singleSelect == true) {
+                        $('.success').removeClass('success');//去除之前选中的行的，选中样式
+                        $($element).addClass('success');//添加当前选中的 success样式用于区别
+                    }
+                },
+            });
+
+            $(window).resize(function () {
+                $table.bootstrapTable('resetView', { height: $(window).height() - $(".table").offset().top });//随窗口变化改变高度
+            })
+        }
+
+        $this.cellStyle = function (value, row, field) {
+            if (value == null) {
+                return "";
+            } else {
+                var v = (parseFloat(value.split("/")[0]) / parseFloat(value.split("/")[1]));
+                
+                if (v < 0.75) {
+                    
+                    return { css: { "background-color": "#c90c0c", "color": "#fff" } };
+                } else {
+                    return "";
+                }
+            }
+            return "";
+        }
+
+
+        $this.TableDataInit();
+    });
+
+
+
+</script>
