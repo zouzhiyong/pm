@@ -24,18 +24,18 @@
                 Font-Names="Verdana"
                 Font-Size="8pt"
                 WaitMessageFont-Names="Verdana"
-                AsyncRendering="False"
+                AsyncRendering="True"
                 SizeToReportContent="True"
                 WaitMessageFont-Size="12px"
                 Height="100%"
                 ZoomMode="Percent"
-                KeepSessionAlive="True" ShowRefreshButton="False" ProcessingMode="Remote">
+                KeepSessionAlive="True" ShowRefreshButton="True" ProcessingMode="Remote">
             </rsweb:ReportViewer>
         </div>
     </form>
     <script type="text/javascript" src="../../Scripts/jquery-2.2.4.min.js"></script>
     <script>
-        Sys.Application.add_load(function () {
+        Sys.Application.add_load(function () {            
             $find("reportViewer1").add_propertyChanged(viewerPropertyChanged);
         });
         function viewerPropertyChanged(sender, e) {
@@ -54,20 +54,7 @@
                 $("#reportViewer1_ctl09").css("overflow", "auto");
             });
         }
-        //$(function () {
-        //    //reportViewer1_ctl04
-        //    //reportViewer1_ctl05
-        //    //reportViewer1_ToggleParam
-
-        //    $("#reportViewer1_ctl04").width($(window).width());
-        //    $("#reportViewer1_ctl05").width($(window).width());
-        //    $("#reportViewer1_ToggleParam").width($(window).width());
-        //    $(window).resize(function () {
-        //        $("#reportViewer1_ctl04").width($(window).width());
-        //        $("#reportViewer1_ctl05").width($(window).width());
-        //        $("#reportViewer1_ToggleParam").width($(window).width());
-        //    });
-        //})
+        
     </script>
 </body>
 </html>
