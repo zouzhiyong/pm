@@ -18,7 +18,7 @@ namespace PM.Areas.Report
             {
                 reportViewer1.ServerReport.ReportServerCredentials = new MyReportServerCredentials();
                 reportViewer1.ServerReport.ReportServerUrl = new Uri("http://192.168.1.206/ReportServer");
-                reportViewer1.ServerReport.ReportPath = "/rdlc/pm";
+                reportViewer1.ServerReport.ReportPath = "/rdlc/EPM-优加经销商上线及使用情况";
             }
         }
     }
