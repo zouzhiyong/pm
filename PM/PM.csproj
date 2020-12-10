@@ -245,6 +245,7 @@
     <Compile Include="Areas\Bas\Controllers\ImplementationController.cs" />
     <Compile Include="Areas\Bas\Controllers\InitDataController.cs" />
     <Compile Include="Areas\Bas\Controllers\MainController.cs" />
+    <Compile Include="Areas\Bas\Controllers\ReportController.cs" />
     <Compile Include="Areas\Bas\MainAreaRegistration.cs" />
     <Compile Include="Areas\Report\Report.aspx.cs">
       <DependentUpon>Report.aspx</DependentUpon>
@@ -254,6 +255,8 @@
       <DependentUpon>Report.aspx</DependentUpon>
     </Compile>
     <Compile Include="Common\CacheHelper.cs" />
+    <Compile Include="Common\ExtLinq.SortBy.cs" />
+    <Compile Include="Common\ExtLinq.cs" />
     <Compile Include="Common\NPOIHelper.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -262,10 +265,17 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\condition.cs" />
+    <Compile Include="Models\HR_report_list.cs" />
+    <Compile Include="Models\HR_report_poptype.cs" />
+    <Compile Include="Models\HR_report_select.cs" />
+    <Compile Include="Models\HR_report3.cs" />
+    <Compile Include="Models\HR_report2.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\StuInfoDBContext.cs" />
     <Compile Include="Models\T_ImplementPersonnel.cs" />
+    <Compile Include="Models\HR_report1.cs" />
     <Compile Include="Models\T_Status.cs" />
     <Compile Include="Models\T_WS_TABEL.cs" />
     <Compile Include="Models\T_WS.cs" />
