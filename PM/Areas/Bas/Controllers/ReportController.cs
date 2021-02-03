@@ -19,7 +19,7 @@ namespace PM.Areas.Bas.Controllers
             var expression = ExtLinq.True<HR_report1>();
             if (!string.IsNullOrEmpty(model.beginDate))
             {
-                expression= expression.And(t => String.Compare(t.t_year_month, model.beginDate, StringComparison.Ordinal) >= 0);
+                expression = expression.And(t => String.Compare(t.t_year_month, model.beginDate, StringComparison.Ordinal) >= 0);
             }
 
             if (!string.IsNullOrEmpty(model.endDate))
@@ -27,17 +27,19 @@ namespace PM.Areas.Bas.Controllers
                 expression = expression.And(t => String.Compare(t.t_year_month, model.endDate, StringComparison.Ordinal) <= 0);
             }
 
-            List<HR_report1> list = new List<HR_report1>();         
+            List<HR_report1> list = new List<HR_report1>();
             if (!string.IsNullOrEmpty(model.sortName))
             {
                 if (model.sortOrder == "asc")
                 {
                     list = testContext.HR_report1.Where(expression).OrderBy(model.sortName).ToList();
-                }else
+                }
+                else
                 {
                     list = testContext.HR_report1.Where(expression).OrderByDescending(model.sortName).ToList();
                 }
-            }else
+            }
+            else
             {
                 list = testContext.HR_report1.Where(expression).ToList();
             }
@@ -62,7 +64,12 @@ namespace PM.Areas.Bas.Controllers
             var expression = ExtLinq.True<HR_report2>();
             if (!string.IsNullOrEmpty(model.t_year_month))
             {
-                expression = expression.And(t => t.t_year_month== model.t_year_month);
+                expression = expression.And(t => t.t_year_month == model.t_year_month);
+            }
+
+            if (!string.IsNullOrEmpty(model.t_ws))
+            {
+                expression = expression.And(t => t.t_ws.Contains(model.t_ws));
             }
 
             List<HR_report2> list = new List<HR_report2>();
@@ -100,8 +107,13 @@ namespace PM.Areas.Bas.Controllers
             var expression = ExtLinq.True<HR_report3>();
             if (!string.IsNullOrEmpty(model.t_year_month))
             {
-                expression = expression.And(t => t.t_year_month == model.t_year_month && t.t_ws == model.t_ws);
-            }           
+                expression = expression.And(t => t.t_year_month == model.t_year_month);
+            }
+
+            if (!string.IsNullOrEmpty(model.t_ws))
+            {
+                expression = expression.And(t => t.t_ws.Contains(model.t_ws));
+            }
 
             List<HR_report3> list = new List<HR_report3>();
             if (!string.IsNullOrEmpty(model.sortName))
@@ -140,7 +152,7 @@ namespace PM.Areas.Bas.Controllers
             var expression = ExtLinq.True<HR_report_select>();
             if (!string.IsNullOrEmpty(type))
             {
-                expression= expression.And(t => t.t_type == type);
+                expression = expression.And(t => t.t_type == type);
             }
 
             var list = testContext.HR_report_select.Where(expression).Select(s =>
@@ -163,18 +175,18 @@ namespace PM.Areas.Bas.Controllers
                 expression = expression.And(t => t.t_name.Contains(model.CodeOrName));
             }
             var _list = testContext.HR_report_poptype.Where(expression).AsQueryable();
-            var list = _list.Where(t=>t.t_type=="&").Select(s =>
-            new
-            {
-                id = s.t_value,
-                text = s.t_name,
-                children = _list.Where(t => t.t_type == s.t_value).Select(_s =>
-                 new
-                 {
-                     id = _s.t_value,
-                     text = _s.t_name
-                 }).ToList()
-            }).ToList();           
+            var list = _list.Where(t => t.t_type == "&").Select(s =>
+                new
+                {
+                    id = s.t_value,
+                    text = s.t_name,
+                    children = _list.Where(t => t.t_type == s.t_value).Select(_s =>
+                     new
+                     {
+                         id = _s.t_value,
+                         text = _s.t_name
+                     }).ToList()
+                }).ToList();
 
             var obj = new { rows = list };
             return Json(obj);
@@ -196,6 +208,39 @@ namespace PM.Areas.Bas.Controllers
             rows = list.Skip(model.pagesize * (model.pagenumber - 1)).Take(model.pagesize).ToList();// Skip(每个页面显示个数 * 页数).Take(每个页面显示个数)
 
             var obj = new { rows = rows, pagenumber = model.pagenumber, pagesize = model.pagesize, total = list.Count() };
+            return Json(obj);
+        }
+
+
+        public JsonResult GeneralBasicUrlDemo()
+        {
+            // 设置APPID/AK/SK
+            var APP_ID = "23627608";
+            var API_KEY = "7Ls8xpojCZeqs2aVezcWOIUM";
+            var SECRET_KEY = "qUFqayqyYpKxGMzQA2koOCnDcdQasP4M";
+
+            var client = new Baidu.Aip.Ocr.Ocr(API_KEY, SECRET_KEY);
+            client.Timeout = 60000;  // 修改超时时间
+            Random ran = new Random();
+            int n = ran.Next(1);
+            //var url = "http://hyfw.95306.cn/gateway/DzswNewD2D/Dzsw/security/jcaptcha.jpg?update=" + n.ToString();
+            var url = "https://pm.unidms.com/Content/img/jcaptcha.jpg";
+
+            // 调用通用文字识别, 图片参数为远程url图片，可能会抛出网络等异常，请使用try/catch捕获
+            var result = client.GeneralBasicUrl(url);
+            Console.WriteLine(result);
+            // 如果有可选参数
+            var options = new Dictionary<string, object>{
+        {"language_type", "CHN_ENG"},
+        {"detect_direction", "true"},
+        {"detect_language", "true"},
+        {"probability", "true"}
+    };
+            // 带参数调用通用文字识别, 图片参数为远程url图片
+            result = client.GeneralBasicUrl(url, options);
+            //Console.WriteLine(result);
+
+            var obj = new { result= result };
             return Json(obj);
         }
     }
